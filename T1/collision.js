@@ -5,7 +5,7 @@ export function intersect(projectile, boxObj) {
     //projectile's bounding sphere
     let spherePosition = new THREE.Vector3();
     projectile.getWorldPosition(spherePosition);
-    let sphere = new Sphere(spherePosition, projectile.children[0].geometry.boundingSphere.radius);
+    let sphere = new Sphere(spherePosition, projectile.geometry.boundingSphere.radius);
     //boxObj's bounding box
     let box = new Box3(new THREE.Vector3(), new THREE.Vector3());
     box.setFromObject(boxObj);  

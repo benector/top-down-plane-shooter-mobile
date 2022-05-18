@@ -1,12 +1,10 @@
 import * as THREE from  'three';
 
-export default class Projectile extends THREE.Object3D{
+export default class Projectile extends THREE.Mesh{
 
     constructor(geometry, material){
-        super(); //Object3D constructor
-        var mesh = new THREE.Mesh(geometry, material);
-        this.add(mesh); //add mesh to projectile
-        mesh.geometry.computeBoundingSphere(); //compute projectile's bounding sphere
+        super(geometry, material); //Object3D constructor
+        this.geometry.computeBoundingSphere(); //compute projectile's bounding sphere
         Projectile.projectiles.push(this); //add projectile to array of projectiles
     }
 
@@ -19,6 +17,7 @@ export default class Projectile extends THREE.Object3D{
             Projectile.projectiles[i].updateMatrixWorld();
             Projectile.projectiles[i].localToWorld(absolutePosition); //get projectile's position relative to world coordinates
             if(absolutePosition.z <= -10){ //remove projectile from scene if it is out of bounds
+                //console.log(Projectile.projectiles[i]);
                 airplane.remove(Projectile.projectiles[i]); 
                 Projectile.projectiles.splice(i, 1); 
             } 

@@ -93,9 +93,11 @@ async function spawnProjectiles(){
 function checkCollisions(){
   for(let i = 0; i<Projectile.projectiles.length; i++){
     if(intersect(Projectile.projectiles[i], enemy)){
+      //enemy.translateX(20);
       dyingEnemies.push(enemy);
+      enemy = undefined;
       cube.remove(Projectile.projectiles[i]);
-      console.log("collision");
+      console.log(enemy);
     }
   }
 }
@@ -107,9 +109,9 @@ function removeEnemies(){
     dyingEnemies[i].scale.z -= 0.05;
     dyingEnemies[i].rotateY(0.1);
     if(dyingEnemies[i].scale.x<=0){
-      console.log("algo");
+      dyingEnemies[i].geometry.dispose();
+      dyingEnemies[i].material.dispose();
       scene.remove(dyingEnemies[i]);
-      dyingEnemies[i].remove(dyingEnemies[i]);
       dyingEnemies.splice(i,1);
     }
   };
