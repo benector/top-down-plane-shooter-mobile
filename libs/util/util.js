@@ -506,7 +506,7 @@ export function createGroundPlaneWired(width, height, widthSegments = 10, height
   //---------------------------------------------------------------------------------------
   // create the ground plane with wireframe
   var planeGeometry = new THREE.PlaneGeometry(width, height, widthSegments, heightSegments);
-    planeGeometry.translate(0.0, 0.0, -0.02); // To avoid conflict with the axeshelper
+    planeGeometry.translate(0.0, 0.0, -0.2); // To avoid conflict with the axeshelper
   var planeMaterial = new THREE.MeshPhongMaterial({
     color: gcolor,
     polygonOffset: true,
