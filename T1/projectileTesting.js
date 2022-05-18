@@ -61,12 +61,16 @@ function render()
 {
   if(!shooting)
     spawnProjectiles();
-  Projectile.moveProjectiles(cube);
+  Projectile.moveProjectiles(scene);
   requestAnimationFrame(render);
   renderer.render(scene, camera) // Render scene
   keyboard.update();
+  if(keyboard.pressed("D"))
+    if(cube.position.x + 0.3 < 10)
+      cube.translateX(0.3);
   if(keyboard.pressed("A"))
-    console.log(cube.children[0]);
+    if(cube.position.x - 0.3 > -10)
+      cube.translateX(-0.3);
   checkCollisions();
   removeEnemies();
 }
@@ -84,7 +88,8 @@ async function spawnProjectiles(){
   while(keyboard.pressed("space")){
     shooting = true;
     let projectile = new Projectile(projectileGeometry, projectileMaterial);
-    cube.add(projectile);
+    projectile.position.set(cube.position.x, cube.position.y, cube.position.z);
+    scene.add(projectile);
     await delay(200);
   }
   shooting = false;
@@ -93,11 +98,10 @@ async function spawnProjectiles(){
 function checkCollisions(){
   for(let i = 0; i<Projectile.projectiles.length; i++){
     if(intersect(Projectile.projectiles[i], enemy)){
-      //enemy.translateX(20);
+      console.log("a");
       dyingEnemies.push(enemy);
       enemy = undefined;
-      cube.remove(Projectile.projectiles[i]);
-      console.log(enemy);
+      scene.remove(Projectile.projectiles[i]);
     }
   }
 }

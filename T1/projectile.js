@@ -10,7 +10,7 @@ export default class Projectile extends THREE.Mesh{
 
     static projectiles = [];
 
-    static moveProjectiles(airplane){
+    static moveProjectiles(scene){
         for(let i = 0; i<Projectile.projectiles.length; i++){
             Projectile.projectiles[i].translateZ(-0.2); //translate projectile
             let absolutePosition = new THREE.Vector3();
@@ -18,7 +18,7 @@ export default class Projectile extends THREE.Mesh{
             Projectile.projectiles[i].localToWorld(absolutePosition); //get projectile's position relative to world coordinates
             if(absolutePosition.z <= -10){ //remove projectile from scene if it is out of bounds
                 //console.log(Projectile.projectiles[i]);
-                airplane.remove(Projectile.projectiles[i]); 
+                scene.remove(Projectile.projectiles[i]); 
                 Projectile.projectiles.splice(i, 1); 
             } 
         }
