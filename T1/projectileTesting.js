@@ -1,5 +1,6 @@
 import * as THREE from  'three';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
+import { Box3, Sphere } from '../build/three.module.js';
 import KeyboardState from '../libs/util/KeyboardState.js';
 import {initRenderer, 
         initCamera,
@@ -10,6 +11,7 @@ import {initRenderer,
         createGroundPlaneXZ} from "../libs/util/util.js";
 
 import Projectile from './projectile.js';
+import {intersect} from './collision.js';
 
 let scene, renderer, camera, material, light, orbit; // variables 
 scene = new THREE.Scene();    // Create main scene
@@ -22,6 +24,7 @@ let projectileGeometry = new THREE.SphereGeometry(0.2);
 let projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 var keyboard = new KeyboardState();
 var shooting = false;
+var dyingEnemies = [];
 
 // Listen window size changes
 window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
@@ -43,6 +46,14 @@ cube.position.set(0.0, 2.0, 8.0);
 // add the cube to the scene
 scene.add(cube);
 
+//create enemy
+let enemyMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 0, 0)"} );
+let enemy = new THREE.Mesh(cubeGeometry, enemyMaterial);
+// position the cube
+enemy.position.set(0.0, 2.0, -8.0);
+// add the cube to the scene
+scene.add(enemy);
+
 render();
 
 
@@ -55,7 +66,9 @@ function render()
   renderer.render(scene, camera) // Render scene
   keyboard.update();
   if(keyboard.pressed("A"))
-    console.log(cube.children);
+    console.log(cube.children[0]);
+  checkCollisions();
+  removeEnemies();
 }
 
 //controls
@@ -76,3 +89,29 @@ async function spawnProjectiles(){
   }
   shooting = false;
 }
+
+function checkCollisions(){
+  for(let i = 0; i<Projectile.projectiles.length; i++){
+    if(intersect(Projectile.projectiles[i], enemy)){
+      dyingEnemies.push(enemy);
+      cube.remove(Projectile.projectiles[i]);
+      console.log("collision");
+    }
+  }
+}
+
+function removeEnemies(){
+  for(let i = 0; i<dyingEnemies.length; i++){
+    dyingEnemies[i].scale.x -= 0.05;
+    dyingEnemies[i].scale.y -= 0.05;
+    dyingEnemies[i].scale.z -= 0.05;
+    dyingEnemies[i].rotateY(0.1);
+    if(dyingEnemies[i].scale.x<=0){
+      console.log("algo");
+      scene.remove(dyingEnemies[i]);
+      dyingEnemies[i].remove(dyingEnemies[i]);
+      dyingEnemies.splice(i,1);
+    }
+  };
+}
+
