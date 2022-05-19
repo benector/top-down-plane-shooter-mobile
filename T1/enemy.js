@@ -18,8 +18,8 @@ export default class Enemy extends THREE.Object3D{
 
     move(){
         this.position.z+=this.speed;
-        // console.log('z',this.position.z)
     }
+    
     fall(){
         this.rotation.y+=0.08;
         this.position.y-=0.6;
