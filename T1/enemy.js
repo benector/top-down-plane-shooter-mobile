@@ -6,12 +6,12 @@ export default class Enemy extends THREE.Object3D{
         super();
         var mesh = new THREE.Mesh(geometry, material);
         this.add(mesh);
-        this.speed = Math.random() * (0.9- 0.3) + 0.3;    
+        this.speed = Math.random() * (1.4- 0.6) + 2.2;    
     }
 
     canMove(){
    
-        if(this.position.z<75)
+        if(this.position.z<300)
         return true;
         return false
     }

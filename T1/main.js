@@ -15,7 +15,7 @@ import {intersectPlayer, intersectProjectile} from './collision.js';
 let scene, renderer, camera, material, light, orbit, projectileGeometry, projectileMaterial; // Initial variables
 scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
-camera = initCamera(new THREE.Vector3(0, 175, 175)); // Init camera in this position
+camera = initCamera(new THREE.Vector3(0, 230, 230)); // Init camera in this position
 material = initBasicMaterial(); // create a basic material
 light = initDefaultBasicLight(scene); // Create a basic light to illuminate the scene
 //orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
@@ -38,9 +38,9 @@ var axesHelper = new THREE.AxesHelper( 12 );
 scene.add( axesHelper );
 
 // create the 2 ground planes
-let plane = createGroundPlaneWired(700, 600,40,40)
+let plane = createGroundPlaneWired(950, 600,40,40)
 scene.add(plane);
-let plane2 = createGroundPlaneWired(700, 600,40,40,"rgb(100,100,20)")
+let plane2 = createGroundPlaneWired(950, 600,40,40,"rgb(100,100,20)")
 plane2.translateY(600);
 scene.add(plane2);
 
@@ -56,8 +56,8 @@ scene.add(airplane);
 
 //min e max são variáveis para serem o range daposição X dos inimigos para que sejam gerados dentro do plano
 
-const min = -50;
-const max = 50;
+const min = -100;
+const max = 100;
 
 function createEnemy (){
     let cubeGeometry = new THREE.BoxGeometry(6,6,6);
@@ -205,11 +205,8 @@ function gameOver(){
     playerDead = false;
   }
 }
-
-
-function render()
+function movingPlanes()
 {
-
   if(plane.position.z > 450) 
   {
     plane.position.set(0,0,-750);
@@ -221,8 +218,11 @@ function render()
    plane2.position.set(0,0,-750);
  }
 plane2.translateY(-1.75);
+}
 
-
+function render()
+{
+  movingPlanes();
   keyboardUpdate();
   moveEnemies();
   // movePlane();
