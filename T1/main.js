@@ -15,10 +15,10 @@ import {intersectPlayer, intersectProjectile} from './collision.js';
 let scene, renderer, camera, material, light, orbit, projectileGeometry, projectileMaterial; // Initial variables
 scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
-camera = initCamera(new THREE.Vector3(0, 250, 80)); // Init camera in this position
+camera = initCamera(new THREE.Vector3(0, 175, 175)); // Init camera in this position
 material = initBasicMaterial(); // create a basic material
 light = initDefaultBasicLight(scene); // Create a basic light to illuminate the scene
-orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
+//orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
 projectileGeometry = new THREE.SphereGeometry(1);
 projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 var shooting = false;
@@ -37,9 +37,12 @@ var keyboard = new KeyboardState();
 var axesHelper = new THREE.AxesHelper( 12 );
 scene.add( axesHelper );
 
-// create the ground plane
-let plane = createGroundPlaneWired(150, 150)
+// create the 2 ground planes
+let plane = createGroundPlaneWired(700, 600,40,40)
 scene.add(plane);
+let plane2 = createGroundPlaneWired(700, 600,40,40,"rgb(100,100,20)")
+plane2.translateY(600);
+scene.add(plane2);
 
 
 // criação do avião
@@ -206,6 +209,20 @@ function gameOver(){
 
 function render()
 {
+
+  if(plane.position.z > 450) 
+  {
+    plane.position.set(0,0,-750);
+  }
+ plane.translateY(-1.75);
+
+ if(plane2.position.z > 450)
+ {
+   plane2.position.set(0,0,-750);
+ }
+plane2.translateY(-1.75);
+
+
   keyboardUpdate();
   moveEnemies();
   // movePlane();
