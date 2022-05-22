@@ -129,7 +129,7 @@ function delay(time) {
 
 async function spawnProjectiles(){
   keyboard.update();
-  while(keyboard.pressed("space")){
+  while(keyboard.pressed("space")||keyboard.pressed("ctrl")){
     if(playerDead)
       break;
     shooting = true;
