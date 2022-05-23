@@ -11,7 +11,7 @@ export default class Enemy extends THREE.Object3D{
 
     canMove(){
    
-        if(this.position.z<300)
+        if(this.position.z<170)
         return true;
         return false
     }
@@ -21,8 +21,13 @@ export default class Enemy extends THREE.Object3D{
     }
     
     fall(){
-        this.rotation.y+=0.08;
-        this.position.y-=0.6;
+        if(this.scale.x > 0){
+            this.rotation.y+=0.08;
+            this.position.y-=0.6;
+            this.scale.x -= 0.02;
+            this.scale.y -= 0.02;
+            this.scale.z -= 0.02;
+        }
     }
 
 }

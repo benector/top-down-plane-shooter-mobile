@@ -20,21 +20,23 @@ export default class Airplane extends THREE.Object3D{
     }
 
     moveLeft(){
-        if(this.position.x>-100)
-        this.translateX(-2);
+        if(this.position.x>-180)
+        this.translateX(-2.5);
     }
 
     moveRight(){
-        if(this.position.x<100)
-        this.translateX(2);
+        if(this.position.x<180)
+        this.translateX(2.5);
     }
 
     moveUp(){
-        this.translateZ(-2);
+        if(this.position.z>-130)
+        this.translateZ(-2.5);
     }
 
     moveDown(){
-        this.translateZ(2);
+        if(this.position.z<140)
+        this.translateZ(2.5);
     }
     
     fall(){

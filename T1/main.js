@@ -15,11 +15,10 @@ import {intersectPlayer, intersectProjectile} from './collision.js';
 let scene, renderer, camera, material, light, orbit, projectileGeometry, projectileMaterial; // Initial variables
 scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
-camera = initCamera(new THREE.Vector3(0, 230, 230)); // Init camera in this position
+camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
 material = initBasicMaterial(); // create a basic material
 light = initDefaultBasicLight(scene); // Create a basic light to illuminate the scene
-//orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
-projectileGeometry = new THREE.SphereGeometry(1);
+projectileGeometry = new THREE.SphereGeometry(1.5);
 projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 var shooting = false;
 var playerDead = false;
@@ -38,9 +37,9 @@ var axesHelper = new THREE.AxesHelper( 12 );
 scene.add( axesHelper );
 
 // create the 2 ground planes
-let plane = createGroundPlaneWired(950, 600,40,40)
+let plane = createGroundPlaneWired(485, 600,40,40)
 scene.add(plane);
-let plane2 = createGroundPlaneWired(950, 600,40,40,"rgb(100,100,20)")
+let plane2 = createGroundPlaneWired(485, 600,40,40,"rgb(100,100,20)")
 plane2.translateY(600);
 scene.add(plane2);
 
@@ -56,21 +55,21 @@ scene.add(airplane);
 
 //min e max são variáveis para serem o range daposição X dos inimigos para que sejam gerados dentro do plano
 
-const min = -100;
-const max = 100;
+const min = -170;
+const max = 170;
 
 function createEnemy (){
-    let cubeGeometry = new THREE.BoxGeometry(6,6,6);
+    let cubeGeometry = new THREE.BoxGeometry(12,12,12);
     let cubeMaterial = initBasicMaterial();;
     cubeMaterial.color.setRGB(1,1,1);
     let enemy = new Enemy(cubeGeometry, cubeMaterial);
-    enemy.position.set(Math.random() * (max - min + 1) + min +5,70.0, -100.0);
+    enemy.position.set(Math.random() * (max - min + 1) + min +5,70.0, -170.0);
     scene.add(enemy);
     createdEnemies.push(enemy);
     // enemy.move();
 }
 
-//vetor para guardar todos os inimigos criados
+//vetore para guardar os inimigos criados e os inimigos que estão morrendo
 var createdEnemies = [];
 var dyingEnemies = [];
 
@@ -105,6 +104,8 @@ setInterval(()=>{
 
 render();
 
+// controle do avião por teclado
+
 function keyboardUpdate() {
   
    keyboard.update();
@@ -121,7 +122,7 @@ function keyboardUpdate() {
 
 }
 
-//projectile behaviour
+// disparo de projéteis
 
 function delay(time) {
   return new Promise(resolve => setTimeout(resolve, time));
@@ -140,6 +141,8 @@ async function spawnProjectiles(){
   }
   shooting = false;
 }
+
+// checagem de colisões entre inimigos e projéteis ou entre inimigos e o avião
 
 function checkCollisions(){
   for(let j = 0; j<createdEnemies.length; j++){
@@ -160,12 +163,11 @@ function checkCollisions(){
   }
 }
 
+// animação de morte e remoção de inimigos 
+
 function removeEnemies(){
   for(let i = 0; i<dyingEnemies.length; i++){
-    dyingEnemies[i].scale.x -= 0.05;
-    dyingEnemies[i].scale.y -= 0.05;
-    dyingEnemies[i].scale.z -= 0.05;
-    dyingEnemies[i].rotateY(0.1);
+    dyingEnemies[i].fall();
     if(dyingEnemies[i].scale.x<=0){
       dyingEnemies[i].children[0].geometry.dispose();
       dyingEnemies[i].children[0].material.dispose();
@@ -174,6 +176,8 @@ function removeEnemies(){
     }
   };
 }
+
+// animação de queda do avião e reinício do jogo
 
 function gameOver(){
   airplane.fall();
@@ -205,6 +209,9 @@ function gameOver(){
     playerDead = false;
   }
 }
+
+// movimenta os planos do chão, dando sensação de movimento
+
 function movingPlanes()
 {
   if(plane.position.z > 450) 
@@ -225,7 +232,6 @@ function render()
   movingPlanes();
   keyboardUpdate();
   moveEnemies();
-  // movePlane();
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
   if(!shooting)
