@@ -32,10 +32,6 @@ var scale = 1.0;
 // To use the keyboard
 var keyboard = new KeyboardState();
 
-// Show axes (parameter is size of each axis)
-var axesHelper = new THREE.AxesHelper( 12 );
-scene.add( axesHelper );
-
 // create the 2 ground planes
 let plane = createGroundPlaneWired(485, 600,40,40)
 scene.add(plane);
@@ -218,13 +214,13 @@ function movingPlanes()
   {
     plane.position.set(0,0,-750);
   }
- plane.translateY(-1.75);
+ plane.translateY(-1.2);
 
  if(plane2.position.z > 450)
  {
    plane2.position.set(0,0,-750);
  }
-plane2.translateY(-1.75);
+plane2.translateY(-1.2);
 }
 
 function render()

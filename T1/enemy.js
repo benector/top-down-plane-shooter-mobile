@@ -6,7 +6,7 @@ export default class Enemy extends THREE.Object3D{
         super();
         var mesh = new THREE.Mesh(geometry, material);
         this.add(mesh);
-        this.speed = Math.random() * (1.4- 0.6) + 2.2;    
+        this.speed = Math.random() * (1.4- 0.6) + 1.2;    
     }
 
     canMove(){
