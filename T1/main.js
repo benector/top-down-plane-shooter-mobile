@@ -9,18 +9,23 @@ import {initRenderer,
 import Airplane from './airplane.js';
 import Enemy from './enemy.js';
 import Projectile from './projectile.js';
-import {intersectPlayer, intersectProjectile} from './collision.js';
+import {intersectBoxes, intersectSphereBox} from './collision.js';
+import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
+import playLevel from './level.js';
 
-let scene, renderer, camera, material, light, orbit, projectileGeometry, projectileMaterial; // Initial variables
+export var scene;
+let renderer, camera, material, light, orbit, projectileGeometry, projectileMaterial; // Initial variables
 scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
+orbit = new OrbitControls( camera, renderer.domElement );
 material = initBasicMaterial(); // create a basic material
 light = initDefaultBasicLight(scene); // Create a basic light to illuminate the scene
 projectileGeometry = new THREE.SphereGeometry(1.5);
 projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 var shooting = false;
 var playerDead = false;
+export const GAME_SPEED = 0.8;
 
 // Listen window size changes
 window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
@@ -45,6 +50,9 @@ var airplane = new Airplane(coneGeometry, material);
 airplane.scale.set=(scale,scale,scale);
 scene.add(airplane);
 
+export default function getPlayerPosition(){
+  return airplane.position;
+}
 
 //criação e movimentação dos inimigos
 
@@ -53,15 +61,18 @@ scene.add(airplane);
 const min = -170;
 const max = 170;
 
-function createEnemy (){
-    let cubeGeometry = new THREE.BoxGeometry(12,12,12);
-    let cubeMaterial = initBasicMaterial();;
-    cubeMaterial.color.setRGB(1,1,1);
-    let enemy = new Enemy(cubeGeometry, cubeMaterial);
-    enemy.position.set(Math.random() * (max - min + 1) + min +5,70.0, -170.0);
-    scene.add(enemy);
-    createdEnemies.push(enemy);
-    // enemy.move();
+export function createEnemy 
+  (x, y, z,
+  geometry,
+  material,
+  type = 'A',
+  isGrounded = false,
+  direction = -1)
+{
+  let enemy = new Enemy(geometry, material, type, isGrounded, direction);
+  enemy.position.set(x, y, z);
+  scene.add(enemy);
+  createdEnemies.push(enemy);
 }
 
 //vetore para guardar os inimigos criados e os inimigos que estão morrendo
@@ -71,11 +82,15 @@ var dyingEnemies = [];
 function moveEnemies(){
   for(var i =0; i < createdEnemies.length; i++)
   {
-    if(createdEnemies[i].canMove())
-    createdEnemies[i].move();
+    if(createdEnemies[i].canMove()){
+      createdEnemies[i].move();
+      createdEnemies[i].shoot();
+    }
     else{
       //remove um inimigo do vetor e também da cena quando atingir os limites do plano
       scene.remove(createdEnemies[i]);
+      createdEnemies[i].children[0].geometry.dispose();
+      createdEnemies[i].children[0].material.dispose();
       createdEnemies.splice(i, 1);
     }
   }
@@ -91,10 +106,12 @@ document.addEventListener("visibilitychange", (event) => {
   }
 });
 
-setInterval(()=>{
+/* setInterval(()=>{
   if (windowOnFocus && !playerDead)
   createEnemy()
-}, 900);
+}, 900); */
+
+playLevel();
 
 
 render();
@@ -126,13 +143,14 @@ function delay(time) {
 async function spawnProjectiles(){
   keyboard.update();
   while(keyboard.pressed("space")||keyboard.pressed("ctrl")){
+    console.log(dyingEnemies);
     if(playerDead)
       break;
     shooting = true;
     let projectile = new Projectile(projectileGeometry, projectileMaterial);
     projectile.position.set(airplane.position.x, airplane.position.y, airplane.position.z - 10);
     scene.add(projectile);
-    await delay(200);
+    await delay(500);
   }
   shooting = false;
 }
@@ -140,41 +158,59 @@ async function spawnProjectiles(){
 // checagem de colisões entre inimigos e projéteis ou entre inimigos e o avião
 
 function checkCollisions(){
+  //colidir inimigos com projéteis/jogador
   for(let j = 0; j<createdEnemies.length; j++){
     for(let i = 0; i<Projectile.projectiles.length; i++){
-      if(intersectProjectile(Projectile.projectiles[i], createdEnemies[j])){
-        dyingEnemies.push(createdEnemies[j]);
-        createdEnemies.splice(j,1);
+      if(!(Projectile.projectiles[i].isEnemy)){
+        if(intersectSphereBox(Projectile.projectiles[i], createdEnemies[j])){
+          createdEnemies[j].isDead = true;
+          dyingEnemies.push(createdEnemies[j]);
+          createdEnemies.splice(j,1);
+          scene.remove(Projectile.projectiles[i]);
+          Projectile.projectiles[i].geometry.dispose();
+          Projectile.projectiles[i].material.dispose();
+          Projectile.projectiles.splice(i, 1);
+        }
+      }
+    }
+    if(intersectBoxes(airplane.children[0], createdEnemies[j])){
+      playerDead = true;
+    } 
+  }
+  //
+  for(let i = 0; i<Projectile.projectiles.length; i++){
+    if(Projectile.projectiles[i].isEnemy){
+      if(intersectSphereBox(Projectile.projectiles[i], airplane.children[0])){
+        playerDead = true;
         scene.remove(Projectile.projectiles[i]);
         Projectile.projectiles[i].geometry.dispose();
         Projectile.projectiles[i].material.dispose();
         Projectile.projectiles.splice(i, 1);
-      }
+      } 
     }
-    if(intersectPlayer(airplane.children[0], createdEnemies[j])){
-      playerDead = true;
-    }
-      
   }
 }
 
 // animação de morte e remoção de inimigos 
 
 function removeEnemies(){
+  
   for(let i = 0; i<dyingEnemies.length; i++){
     dyingEnemies[i].fall();
-    if(dyingEnemies[i].scale.x<=0){
+    if(dyingEnemies[i].children[0].scale.x<=0){
       dyingEnemies[i].children[0].geometry.dispose();
       dyingEnemies[i].children[0].material.dispose();
       scene.remove(dyingEnemies[i]);
       dyingEnemies.splice(i,1);
-    }
+    }  
+
   };
 }
 
 // animação de queda do avião e reinício do jogo
 
 function gameOver(){
+  return;
   airplane.fall();
   if(airplane.position.y < 0){
     airplane.position.set(0.0, 70.0, 40.0);
@@ -189,6 +225,7 @@ function gameOver(){
 
     createdEnemies.forEach(enemy => {
       scene.remove(enemy);
+      enemy.isDead = true;
       enemy.children[0].geometry.dispose();
       enemy.children[0].material.dispose();
     });
@@ -202,6 +239,7 @@ function gameOver(){
     dyingEnemies = [];
     
     playerDead = false;
+    playLevel();
   }
 }
 
@@ -213,13 +251,13 @@ function movingPlanes()
   {
     plane.position.set(0,0,-750);
   }
- plane.translateY(-1.2);
+ plane.translateY(-GAME_SPEED);
 
  if(plane2.position.z > 450)
  {
    plane2.position.set(0,0,-750);
  }
-plane2.translateY(-1.2);
+plane2.translateY(-GAME_SPEED);
 }
 
 function render()
