@@ -27,3 +27,16 @@ export function intersectPlayer(player, enemy) {
     //checar colisão
     return enemyBox.intersectsBox(playerBox);
 }
+
+// verificar intersecção entre míssil e inimigo de terra
+
+export function intersectMissile(missile, enemy) {
+    //bounding box do jogador
+    let missileBox = new Box3(new THREE.Vector3(), new THREE.Vector3());
+    missileBox.setFromObject(missile); 
+    //bounding box do inimigo
+    let enemyBox = new Box3(new THREE.Vector3(), new THREE.Vector3());
+    enemyBox.setFromObject(enemy);  
+    //checar colisão
+    return enemyBox.intersectsBox(missileBox);
+}

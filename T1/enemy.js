@@ -2,11 +2,29 @@ import * as THREE from  'three';
 
 export default class Enemy extends THREE.Object3D{
 
-    constructor(geometry, material){
+    constructor(geometry, material,type,){
         super();
         var mesh = new THREE.Mesh(geometry, material);
         this.add(mesh);
-        this.speed = Math.random() * (1.4- 0.6) + 1.2;    
+        this.speed = Math.random() * (1.4- 0.6) + 1.2;  
+        //criei  um tipo pra cada inimigo agora que é terra e ar mas não cheguei a usar isso ainda, talvez nem precise 
+        this.type = type// 1=air, 2 = earth 
+        // id criado para diferenciar os inimigos, porque durante uma colisão existem vários pontos de
+        //interseção, então a função que checa colisões retorna verdadeiro várias vezes, mas pro caso dos danos só
+        //contabilziamos a primeira interseção, pra isso lá ná função de colisão há a checagem se a colisão 
+        //que está sendo verificada é de um inimigo que acabou de ser verificado ou se é um novo, antes
+        //de contabilizar o dano do avião
+        this.enemyId = 0;
+    
+    }
+    
+
+    setId(value){
+        this.enemyId= value;
+    }
+
+    getId(){
+        return this.enemyId;
     }
 
     canMove(){
