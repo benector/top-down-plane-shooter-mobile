@@ -42,13 +42,15 @@ export default class Enemy extends THREE.Object3D{
                 this.position.z+=this.ZSpeed/1.2;
                 this.position.x = this.position.z * this.position.z * 0.005 * this.direction;
                 if(!this.isDead){
-                    this.children[0].rotation.y = this.position.z == 0 ? 0 : this.direction*(this.direction *( Math.PI/2 + (this.position.x - this.position.z) * ((Math.PI/2)/ this.position.z)));
+                    this.children[0].rotation.y = this.position.z == 0 ? 0 : (( Math.PI/2 + (this.position.x - this.position.z) * ((Math.PI/2)/ this.position.z)));
+                    this.children[0].rotation.z = (250 + this.position.x/250)* Math.PI/9 * this.direction;
                 }
                 console.log(this.position.x, this.position.z, this.children[0].rotation.y)
                 break;
             case 'D':
                 this.position.z+= this.ZSpeed;
                 this.position.x+= this.XSpeed;
+                this.children[0].rotation.y = 0.9 * this.direction;
                 break;
             
         }
