@@ -13,7 +13,7 @@ function delay(time) {
 
 export default async function playLevel(){
     await delay(1500);
-    /* createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
+    createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
     createEnemy(50, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
@@ -145,7 +145,7 @@ export default async function playLevel(){
     createEnemy(-160, 70, -170, enemyGeometry, enemyMaterial);
     createEnemy(160, 70, -170, enemyGeometry, enemyMaterial);
     createEnemy(0, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
-    await delay(6500); */
+    await delay(6500);
 
     createEnemy(-200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, 1);
     await delay(800);

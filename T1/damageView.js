@@ -99,8 +99,7 @@ export class damageInfo {
       }
 
     async gameOver(){
-        console.log('called');
        await this.delay(2000);
-        this.updateDamage(0);
+       // this.updateDamage(0);
     }
 }
