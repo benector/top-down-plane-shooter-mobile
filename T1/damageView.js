@@ -61,32 +61,35 @@ export class damageInfo {
         this.infoBox.removeChild(this.damageCounter);
     }
     
-    updateDamage(damage){
-         //a cada update de dano os elementos da barra de danos e contador são resetados e recriados
-         this.deleteDamageBar();
-         this.deleteDamageCounter();
-         this.newDamageBar();
-         this.newDamageCounter(damage);
-       if(damage<=5)
+    updateDamage(damage, playerDead){
+       if(!playerDead)
        {
-        for(let i =0; i<(5-damage); i++)
-        {
-            let damageBlock = document.createElement('div');
-            damageBlock.style.width = "40px";
-            damageBlock.style.height = "20px";
-            damageBlock.style.border = "solid 1px black"
-            damageBlock.style.padding = "0";
-            damageBlock.style.margin = "0";
-    
-            if(damage<2)
-            damageBlock.style.backgroundColor = "rgba(124,252,0,0.5)";
-            if(damage==2)
-            damageBlock.style.backgroundColor = "rgba(255,215,0,0.5)";
-            if(damage>2)
-            damageBlock.style.backgroundColor = "rgba(255,0,0,0.5)";
-    
-            this.damageBar.appendChild(damageBlock);
-        }
+             //a cada update de dano os elementos da barra de danos e contador são resetados e recriados
+            this.deleteDamageBar();
+            this.deleteDamageCounter();
+            this.newDamageBar();
+            this.newDamageCounter(damage);
+            if(damage<=5)
+            {
+                for(let i =0; i<(5-damage); i++)
+                {
+                    let damageBlock = document.createElement('div');
+                    damageBlock.style.width = "40px";
+                    damageBlock.style.height = "20px";
+                    damageBlock.style.border = "solid 1px black"
+                    damageBlock.style.padding = "0";
+                    damageBlock.style.margin = "0";
+            
+                    if(damage<2)
+                    damageBlock.style.backgroundColor = "rgba(124,252,0,0.5)";
+                    if(damage==2)
+                    damageBlock.style.backgroundColor = "rgba(255,215,0,0.5)";
+                    if(damage>2)
+                    damageBlock.style.backgroundColor = "rgba(255,0,0,0.5)";
+            
+                    this.damageBar.appendChild(damageBlock);
+                }
+            }
        }
     }
 

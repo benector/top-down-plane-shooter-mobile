@@ -1,10 +1,13 @@
 import * as THREE from  'three';
-import { createEnemy, scene } from './main.js';
+import { createEnemy, createRecharge, scene } from './main.js';
 import Enemy from './enemy.js';
 
 let enemyGeometry = new THREE.ConeGeometry( 8, 3, 3 );
 let enemyMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 255)"} );
 
+
+let rechargeGeometry = new THREE.SphereGeometry(6);
+let rechargeMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 0, 0)"} );
 //TIPO A: createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
 
 function delay(time) {
@@ -15,44 +18,59 @@ export default async function playLevel(){
     await delay(1500);
     createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(50, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(100, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-100, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(150, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(70, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-10, 70, -170, enemyGeometry, enemyMaterial);
     await delay(5500);
 
     createEnemy(-100, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(150, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(70, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
     createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-70, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
     createEnemy(-120, 70, -170, enemyGeometry, enemyMaterial);
     await delay(6500);
 
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, -1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, -1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, -1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, -1);
     await delay(2200);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, 1);
     await delay(7500);
 
@@ -87,29 +105,39 @@ export default async function playLevel(){
 
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, -1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, -1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(0, 70, -200, enemyGeometry, enemyMaterial, 'C', false, -1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(10, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(150, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(70, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(100, 6, -250, enemyGeometry, enemyMaterial, 'A', true);
     await delay(6500);
 
     createEnemy(-150, 70, -170, enemyGeometry, enemyMaterial);
     createEnemy(360, 70, -20, enemyGeometry, enemyMaterial, 'B', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-100, 70, -170, enemyGeometry, enemyMaterial);
     createEnemy(360, 70, -70, enemyGeometry, enemyMaterial, 'B', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
     createEnemy(360, 70, -120, enemyGeometry, enemyMaterial, 'B', false, 1);
     await delay(7500);
@@ -149,20 +177,26 @@ export default async function playLevel(){
 
     createEnemy(-200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, -1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, -1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(200, 70, -150, enemyGeometry, enemyMaterial, 'D', false, -1);
     await delay(4200);
 
     createEnemy(-360, 70, 0, enemyGeometry, enemyMaterial, 'B', false, -1);
     createEnemy(360, 70, 30, enemyGeometry, enemyMaterial, 'B', false, 1);
     await delay(800);
+    createRecharge(rechargeGeometry, rechargeMaterial);
     createEnemy(-360, 70, 0, enemyGeometry, enemyMaterial, 'B', false, -1);
     createEnemy(360, 70, 30, enemyGeometry, enemyMaterial, 'B', false, 1);
     await delay(500);
