@@ -73,7 +73,6 @@ export function createEnemy
   enemy.position.set(x, y, z);
   scene.add(enemy);
   enemies.push(enemy);
-  enemy.setId(iterations + enemies.length);
 }
 
 //vetor para guardar os inimigos criados e os inimigos que estão morrendo
@@ -106,7 +105,6 @@ let usedRecharges = [];
 
 export function createRecharge(geometry, material){
   let recharge = new Recharge(geometry,material);
-  recharge.setId(iterations + enemies.length);
   recharge.position.set(Math.random() * (max - min + 1) + min +5,70.0, -170.0);
   scene.add(recharge);
   recharges.push(recharge);
@@ -137,9 +135,7 @@ document.addEventListener("visibilitychange", (event) => {
   }
 });
 
-//criação e movimentação dos inimigos
-let iterations = 0;
-
+//criação e movimentação dos inimigos e recargas
 playLevel();
 
 render();
