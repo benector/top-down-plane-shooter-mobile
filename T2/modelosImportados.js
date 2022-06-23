@@ -109,15 +109,10 @@ function loadGLTFFile(modelPath, modelName, visibility, desiredScale)
 
     scene.add ( obj );
     objectArray.push( obj );
-    return obj.geometry;
-
     }, onProgress, onError);
+    return obj;
 }
-export function buildE1()
-{
-    let E1;
-    E1 = loadGLTFFile('../T2/assets/','E1',false,1.0);
-}
+
 
 function loadOBJFile(modelPath, modelName, visibility, desiredScale)
 {
@@ -160,6 +155,7 @@ function loadOBJFile(modelPath, modelName, visibility, desiredScale)
           }
 
         }, onProgress, onError );
+        return obj;
   });
 }
 
