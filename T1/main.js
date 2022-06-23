@@ -76,7 +76,6 @@ export function createEnemy
   enemy.position.set(x, y, z);
   scene.add(enemy);
   enemies.push(enemy);
-  enemy.setId(iterations + enemies.length);
 }
 
 //vetor para guardar os inimigos criados e os inimigos que estão morrendo

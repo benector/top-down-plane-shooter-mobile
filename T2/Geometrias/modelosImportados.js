@@ -53,39 +53,16 @@ var activeObject = 0;
 
 
 
-loadGLTFFile('../T2/assets/','E1',false,1.0);
-loadGLTFFile('../T2/assets/','E2',false,1.0);
-loadGLTFFile('../T2/assets/','E3',false,1.0);
-loadOBJFile('../T2/assets/', 'launcher', true, 0.7);
-loadGLTFFile('../T2/assets/','Plane',true,1.0);
+loadGLTFFile('assets/','E1',false,1.0);
+loadGLTFFile('assets/','E2',false,1.0);
+loadGLTFFile('assets/','E3',false,1.0);
+loadOBJFile('assets/', 'launcher', true, 0.7);
+loadGLTFFile('assets/','Plane',true,1.0);
 
 
 ;
 buildInterface();
 render();
-
-function loadPLYFile(modelPath, modelName, visibility, desiredScale)
-{
-  var loader = new PLYLoader( );
-  loader.load( modelPath + modelName + '.ply', function ( geometry ) {
-
-    geometry.computeVertexNormals();
-
-    var material = new THREE.MeshPhongMaterial({color:"rgb(255,120,50)"});
-    var obj = new THREE.Mesh( geometry, material );
-
-    obj.name = modelName;
-    obj.visible = visibility;
-    obj.castShadow = true;
-
-    var obj = normalizeAndRescale(obj, desiredScale);
-    var obj = fixPosition(obj);
-
-    scene.add( obj );
-    objectArray.push( obj );
-
-    }, onProgress, onError);
-}
 
 function loadGLTFFile(modelPath, modelName, visibility, desiredScale)
 {
@@ -186,22 +163,6 @@ function fixPosition(obj)
   else
     obj.translateY(-1*box.min.y);
   return obj;
-}
-
-function renderFirstObjectLoaded()
-{
-  activeObject = 0;
-  objectArray[0].visible = true;
-  if(!firstRender) firstRender = true;
-}
-
-function createSphere(radius, widthSegments, heightSegments)
-{
-  var geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments, 0, Math.PI * 2, 0, Math.PI);
-  var material = new THREE.MeshBasicMaterial({color:"rgb(255,255,50)"});
-  var object = new THREE.Mesh(geometry, material);
-    object.castShadow = true;
-  return object;
 }
 
 function buildInterface()

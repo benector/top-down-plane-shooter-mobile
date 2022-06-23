@@ -1,8 +1,8 @@
 import * as THREE from  'three';
-import { createEnemy, scene } from './main.js';
-import Enemy from './enemy.js';
+import { buildHealer } from './geometries.js';
+import { createEnemy} from './main.js';
 
-let enemyGeometry = new THREE.ConeGeometry( 8, 3, 3 );
+let enemyGeometry = /* new THREE.ConeGeometry( 8, 3, 3 ); */buildHealer();
 let enemyMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 255)"} );
 
 //TIPO A: createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
