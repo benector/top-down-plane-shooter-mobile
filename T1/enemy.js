@@ -5,11 +5,11 @@ import Projectile from './projectile.js';
 
 export default class Enemy extends THREE.Object3D{
 
-    constructor(geometry, material, type = 'A', isGrounded = false, direction = -1){
+    constructor(obj, type = 'A', isGrounded = false, direction = -1){
         super();
-        console.log(this.position.z);
-        var mesh = new THREE.Mesh(geometry, material);
-        this.add(mesh);
+        //var mesh = new THREE.Mesh(geometry, material);
+        console.log(obj);
+        //this.add(obj);
         this.direction = direction;
         this.ZSpeed = (isGrounded ? GAME_SPEED : 0.9) * (type == 'B' ? direction*-1 : 1 );
         if(type == 'D'){

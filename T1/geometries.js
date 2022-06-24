@@ -1,7 +1,10 @@
 import * as THREE from  'three';
-import {degreesToRadians} from "../libs/util/util.js";
+import {degreesToRadians, getMaxSize} from "../libs/util/util.js";
 
-import { CSG } from '../libs/other/CSGMesh.js'        
+import { CSG } from '../libs/other/CSGMesh.js' 
+import {GLTFLoader} from '../build/jsm/loaders/GLTFLoader.js';
+import {OBJLoader} from '../build/jsm/loaders/OBJLoader.js';    
+import { Object3D } from '../build/three.module.js';
 
 export function buildHealerGeometry(){
     let auxMat = new THREE.Matrix4();
@@ -31,4 +34,54 @@ export function buildHealerGeometry(){
     csgObject2 = cylinderCSG.subtract(csgObject) // Execute subtraction
     let mesh1 = CSG.toMesh(csgObject2, auxMat)
     return mesh1.geometry;
+}
+
+export function loadGLTFFile(modelName, visibility, desiredScale)
+{
+  var loader = new GLTFLoader( );
+  var object = new Object3D();
+  loader.load( "assets/" + modelName + '.gltf', function ( gltf ) {
+    var obj = gltf.scene;
+    obj.name = modelName;
+    obj.visible = visibility;
+    obj.traverse( function ( child ) {
+      if ( child ) {
+          child.castShadow = true;
+      }
+    });
+    obj.traverse( function( node )
+    {
+      if( node.material ) node.material.side = THREE.DoubleSide;
+    });
+
+    var obj = normalizeAndRescale(obj, desiredScale);
+    var obj = fixPosition(obj);
+    object.add(obj);
+    }, onProgress, onError);
+    //console.log(object.children);
+    return object;
+}
+
+function onError() { };
+
+function onProgress ( xhr, model ) { }
+
+function normalizeAndRescale(obj, newScale)
+{
+  var scale = getMaxSize(obj); // Available in 'utils.js'
+  obj.scale.set(newScale * (1.0/scale),
+                newScale * (1.0/scale),
+                newScale * (1.0/scale));
+  return obj;
+}
+
+function fixPosition(obj)
+{
+  // Fix position of the object over the ground plane
+  var box = new THREE.Box3().setFromObject( obj );
+  if(box.min.y > 0)
+    obj.translateY(-box.min.y);
+  else
+    obj.translateY(-1*box.min.y);
+  return obj;
 }

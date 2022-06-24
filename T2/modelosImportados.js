@@ -83,7 +83,7 @@ function loadPLYFile(modelPath, modelName, visibility, desiredScale)
 
     scene.add( obj );
     objectArray.push( obj );
-
+    return obj.children[0].children[1];
     }, onProgress, onError);
 }
 

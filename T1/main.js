@@ -66,13 +66,12 @@ const max = 170;
 
 export function createEnemy 
   (x, y, z,
-  geometry,
-  material,
+  obj,
   type = 'A',
   isGrounded = false,
   direction = -1)
 {
-  let enemy = new Enemy(geometry, material, type, isGrounded, direction);
+  let enemy = new Enemy(obj, type, isGrounded, direction);
   enemy.position.set(x, y, z);
   scene.add(enemy);
   enemies.push(enemy);
