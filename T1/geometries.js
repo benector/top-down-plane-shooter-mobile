@@ -5,7 +5,6 @@ import { CSG } from '../libs/other/CSGMesh.js'
 import {GLTFLoader} from '../build/jsm/loaders/GLTFLoader.js';
 import {OBJLoader} from '../build/jsm/loaders/OBJLoader.js';    
 import { Mesh, Object3D } from '../build/three.module.js';
-import { scene } from './main.js';
 
 export function buildHealerGeometry(){
     let auxMat = new THREE.Matrix4();
@@ -56,10 +55,11 @@ export function loadGLTFFile(modelName, visibility, desiredScale, object)
 
     var obj = normalizeAndRescale(obj, desiredScale);
     var obj = fixPosition(obj);
-
-    object.add ( obj );
-    //objectArray.push( obj );
-
+    console.log(obj.children[0].children[1]);
+    obj.children[0].children[1].children.forEach(mesh => {
+        mesh.rotateY(Math.PI/2)
+        object.add(mesh.clone());
+    });
     }, onProgress, onError);
 }
 
@@ -86,3 +86,12 @@ function fixPosition(obj)
     obj.translateY(-1*box.min.y);
   return obj;
 }
+
+export let E1 = new Object3D;
+loadGLTFFile("E1", true, 1, E1);
+
+export let E2 = new Object3D;
+loadGLTFFile("E1", true, 1, E1);
+
+export let E3 = new Object3D;
+loadGLTFFile("E1", true, 1, E1);

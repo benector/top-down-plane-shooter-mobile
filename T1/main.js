@@ -65,13 +65,13 @@ const min = -170;
 const max = 170;
 
 export function createEnemy 
-  (x, y, z,/* 
-  obj, */
+  (x, y, z,
+  obj,
   type = 'A',
   isGrounded = false,
   direction = -1)
 {
-  let enemy = new Enemy(/* obj,  */type, isGrounded, direction);
+  let enemy = new Enemy(obj, type, isGrounded, direction);
   enemy.position.set(x, y, z);
   scene.add(enemy);
   enemies.push(enemy);
@@ -229,8 +229,6 @@ function removeEnemies(){
   for(let i = 0; i<dyingEnemies.length; i++){
     dyingEnemies[i].fall();
     if(dyingEnemies[i].children[0].scale.x<=0){
-      dyingEnemies[i].children[0].geometry.dispose();
-      dyingEnemies[i].children[0].material.dispose();
       scene.remove(dyingEnemies[i]);
       dyingEnemies.splice(i,1);
     }  
@@ -260,15 +258,11 @@ function gameOver(){
     enemies.forEach(enemy => {
       scene.remove(enemy);
       enemy.isDead = true;
-      enemy.children[0].geometry.dispose();
-      enemy.children[0].material.dispose();
     });
     enemies = [];
 
     dyingEnemies.forEach(enemy => {
       scene.remove(enemy);
-      enemy.children[0].geometry.dispose();
-      enemy.children[0].material.dispose();
     });
     dyingEnemies = [];
   }

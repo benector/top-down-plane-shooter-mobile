@@ -1,15 +1,18 @@
 import * as THREE from  'three';
-import { loadGLTFFile } from './geometries.js';
+import { Object3D, SphereGeometry, Vector3 } from '../build/three.module.js';
 import getPlayerPosition, { GAME_SPEED, scene } from './main.js';
 import Projectile from './projectile.js';
 
 export default class Enemy extends THREE.Object3D{
 
-    constructor(/* obj,  */type = 'A', isGrounded = false, direction = -1){
+    constructor(obj, type = 'A', isGrounded = false, direction = -1){
         super();
         //var mesh = new THREE.Mesh(geometry, material);
-        loadGLTFFile("E1", true, 40, this)
-        //this.add(obj);
+        console.log(obj);
+        this.add(obj.clone());
+        this.children[0].scale.x = 2.5
+        this.children[0].scale.y = 2.5
+        this.children[0].scale.z = 2.5
         this.direction = direction;
         this.ZSpeed = (isGrounded ? GAME_SPEED : 0.9) * (type == 'B' ? direction*-1 : 1 );
         if(type == 'D'){
