@@ -1,5 +1,4 @@
 import * as THREE from  'three';
-import { Object3D, SphereGeometry, Vector3 } from '../build/three.module.js';
 import getPlayerPosition, { GAME_SPEED, scene } from './main.js';
 import Projectile from './projectile.js';
 
@@ -7,12 +6,17 @@ export default class Enemy extends THREE.Object3D{
 
     constructor(obj, type = 'A', isGrounded = false, direction = -1){
         super();
-        //var mesh = new THREE.Mesh(geometry, material);
-        console.log(obj);
         this.add(obj.clone());
-        this.children[0].scale.x = 2.5
-        this.children[0].scale.y = 2.5
-        this.children[0].scale.z = 2.5
+        if(isGrounded){
+            this.children[0].scale.x = 0.0012
+            this.children[0].scale.y = 0.0012
+            this.children[0].scale.z = 0.0012
+            this.children[0].rotateY(Math.PI/2)
+        } else {
+            this.children[0].scale.x = 2.5
+            this.children[0].scale.y = 2.5
+            this.children[0].scale.z = 2.5
+        }
         this.direction = direction;
         this.ZSpeed = (isGrounded ? GAME_SPEED : 0.9) * (type == 'B' ? direction*-1 : 1 );
         if(type == 'D'){
@@ -45,6 +49,7 @@ export default class Enemy extends THREE.Object3D{
                 break;
             case 'B':
                 this.position.x+=this.ZSpeed;
+                this.children[0].rotation.y = Math.PI/2 * -this.direction;
                 break;
             case 'C':
                 this.position.z+=this.ZSpeed/1.2;
@@ -53,7 +58,6 @@ export default class Enemy extends THREE.Object3D{
                     this.children[0].rotation.y = this.position.z == 0 ? 0 : (( Math.PI/2 + (this.position.x - this.position.z) * ((Math.PI/2)/ this.position.z)));
                     this.children[0].rotation.z = (250 + this.position.x/250)* Math.PI/9 * this.direction;
                 }
-                console.log(this.position.x, this.position.z, this.children[0].rotation.y)
                 break;
             case 'D':
                 this.position.z+= this.ZSpeed;

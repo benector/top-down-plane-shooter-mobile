@@ -1,10 +1,10 @@
 import * as THREE from  'three';
-import {degreesToRadians, getMaxSize} from "../libs/util/util.js";
-
-import { CSG } from '../libs/other/CSGMesh.js' 
 import {GLTFLoader} from '../build/jsm/loaders/GLTFLoader.js';
-import {OBJLoader} from '../build/jsm/loaders/OBJLoader.js';    
-import { Mesh, Object3D } from '../build/three.module.js';
+import {OBJLoader} from '../build/jsm/loaders/OBJLoader.js';
+import {MTLLoader} from '../build/jsm/loaders/MTLLoader.js';
+import {getMaxSize, degreesToRadians} from "../libs/util/util.js";
+import { Object3D } from '../build/three.module.js';
+import { CSG } from '../libs/other/CSGMesh.js' 
 
 export function buildHealerGeometry(){
     let auxMat = new THREE.Matrix4();
@@ -55,13 +55,61 @@ export function loadGLTFFile(modelName, visibility, desiredScale, object)
 
     var obj = normalizeAndRescale(obj, desiredScale);
     var obj = fixPosition(obj);
-    console.log(obj.children[0].children[1]);
-    obj.children[0].children[1].children.forEach(mesh => {
-        mesh.rotateY(Math.PI/2)
+    obj.children[0].children[(modelName == "plane" ? 0 : 1)].children.forEach(mesh => {
+        if(modelName == "E1")
+            mesh.rotateY(Math.PI/2)
         object.add(mesh.clone());
     });
     }, onProgress, onError);
 }
+
+
+function loadOBJFile(modelName, visibility, desiredScale, object)
+{
+  var manager = new THREE.LoadingManager( );
+
+  var mtlLoader = new MTLLoader( manager );
+  mtlLoader.setPath( "assets/" );
+  mtlLoader.load( modelName + '.mtl', function ( materials ) {
+        materials.preload();
+
+        var objLoader = new OBJLoader( manager );
+        objLoader.setMaterials(materials);
+        objLoader.setPath("assets/");
+        objLoader.load( modelName + ".obj", function ( obj ) {
+          obj.name = modelName;
+          obj.visible = visibility;
+          // Set 'castShadow' property for each children of the group
+          obj.traverse( function (child)
+          {
+            child.castShadow = true;
+          });
+
+          obj.traverse( function( node )
+          {
+            if( node.material ) node.material.side = THREE.DoubleSide;
+          });
+
+          var obj = normalizeAndRescale(obj, desiredScale);
+          var obj = fixPosition(obj);
+
+          console.log(obj);
+          obj.children.forEach(mesh => {
+            object.add(mesh.clone());
+        });
+
+          // Pick the index of the first visible object
+          if(modelName == 'launcher')
+          {
+            activeObject = objectArray.length-1;
+          }
+
+        }, onProgress, onError );
+  });
+}
+
+
+
 
 function onError() { };
 
@@ -87,11 +135,21 @@ function fixPosition(obj)
   return obj;
 }
 
+export let plane = new Object3D;
+loadGLTFFile("plane", true, 1, plane);
+plane.rotateY(Math.PI);
+
 export let E1 = new Object3D;
 loadGLTFFile("E1", true, 1, E1);
 
 export let E2 = new Object3D;
-loadGLTFFile("E1", true, 1, E1);
+loadGLTFFile("E2", true, 1, E2);
 
 export let E3 = new Object3D;
-loadGLTFFile("E1", true, 1, E1);
+loadGLTFFile("E3", true, 1, E3);
+
+export let launcher = new Object3D;
+loadOBJFile("launcher", true, 1, launcher);
+launcher.scale.x = 0.01
+launcher.scale.y = 0.01
+launcher.scale.z = 0.01

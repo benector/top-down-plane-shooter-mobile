@@ -1,5 +1,6 @@
 import * as THREE from  'three';
 import { degreesToRadians } from '../libs/util/util.js';
+import { plane } from './geometries.js';
 
 export default class Airplane extends THREE.Object3D{
     
@@ -10,12 +11,10 @@ export default class Airplane extends THREE.Object3D{
         //então o avião é rotacionado e adicionado ao holder do avião
         this.position.set(0.0, 70.0, 40.0);
         let localScale = 1.0
-        const cone = new THREE.Mesh(geometry, material);
-        cone.scale.set(localScale, localScale, localScale);
-        this.plane = cone;
-        let angle = degreesToRadians(-90);
-        cone.rotateX(angle);
-        this.add(cone);
+        this.add(plane);
+        this.children[0].scale.x = 2
+        this.children[0].scale.y = 2
+        this.children[0].scale.z = 2
         this.damage = 0;
 
     }

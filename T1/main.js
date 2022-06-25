@@ -241,6 +241,8 @@ function gameOver(){
   airplane.fall();
   if(airplane.position.y < 0){
 
+    scene.remove(airplane);
+
     Projectile.projectiles.forEach(projectile => {
       scene.remove(projectile);
       projectile.geometry.dispose();
