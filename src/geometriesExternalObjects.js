@@ -54,7 +54,7 @@ var activeObject = 0;
 loadOBJFile('../assets/objects/', 'dolphins', true, 1.5);
 loadOBJFile('../assets/objects/', 'rose+vase', false, 1.5);
 loadOBJFile('../assets/objects/', 'flowers', false, 1.5);
-loadGLTFFile('../assets/objects/', 'TocoToucan', false, 2.0);
+loadGLTFFile('../assets/objects/', 'E2', false, 2.0);
 loadPLYFile('../assets/objects/', 'cow', false, 2.0);
 loadOBJFile('../assets/objects/', 'f-16', false, 2.2);
 loadOBJFile('../assets/objects/', 'soccerball', false, 1.2);

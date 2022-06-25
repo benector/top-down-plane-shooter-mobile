@@ -22,7 +22,7 @@ let renderer, camera, light, orbit, projectileGeometry, projectileMaterial, miss
 scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
-//orbit = new OrbitControls( camera, renderer.domElement );
+orbit = new OrbitControls( camera, renderer.domElement );
 light = initDefaultBasicLight(scene); // Create a basic light to illuminate the scene
 projectileGeometry = new THREE.SphereGeometry(1.5);
 projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
@@ -65,13 +65,13 @@ const min = -170;
 const max = 170;
 
 export function createEnemy 
-  (x, y, z,
-  obj,
+  (x, y, z,/* 
+  obj, */
   type = 'A',
   isGrounded = false,
   direction = -1)
 {
-  let enemy = new Enemy(obj, type, isGrounded, direction);
+  let enemy = new Enemy(/* obj,  */type, isGrounded, direction);
   enemy.position.set(x, y, z);
   scene.add(enemy);
   enemies.push(enemy);
@@ -92,8 +92,8 @@ function moveEnemies(){
     else{
       //remove um inimigo do vetor e também da cena quando atingir os limites do plano
       scene.remove(enemies[i]);
-      enemies[i].children[0].geometry.dispose();
-      enemies[i].children[0].material.dispose();
+/*       enemies[i].children[0].geometry.dispose();
+      enemies[i].children[0].material.dispose(); */
       enemies.splice(i, 1);
     }
   }

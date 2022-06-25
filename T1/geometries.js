@@ -4,7 +4,8 @@ import {degreesToRadians, getMaxSize} from "../libs/util/util.js";
 import { CSG } from '../libs/other/CSGMesh.js' 
 import {GLTFLoader} from '../build/jsm/loaders/GLTFLoader.js';
 import {OBJLoader} from '../build/jsm/loaders/OBJLoader.js';    
-import { Object3D } from '../build/three.module.js';
+import { Mesh, Object3D } from '../build/three.module.js';
+import { scene } from './main.js';
 
 export function buildHealerGeometry(){
     let auxMat = new THREE.Matrix4();
@@ -36,10 +37,9 @@ export function buildHealerGeometry(){
     return mesh1.geometry;
 }
 
-export function loadGLTFFile(modelName, visibility, desiredScale)
+export function loadGLTFFile(modelName, visibility, desiredScale, object)
 {
   var loader = new GLTFLoader( );
-  var object = new Object3D();
   loader.load( "assets/" + modelName + '.gltf', function ( gltf ) {
     var obj = gltf.scene;
     obj.name = modelName;
@@ -56,10 +56,11 @@ export function loadGLTFFile(modelName, visibility, desiredScale)
 
     var obj = normalizeAndRescale(obj, desiredScale);
     var obj = fixPosition(obj);
-    object.add(obj);
+
+    object.add ( obj );
+    //objectArray.push( obj );
+
     }, onProgress, onError);
-    //console.log(object.children);
-    return object;
 }
 
 function onError() { };

@@ -1,14 +1,14 @@
 import * as THREE from  'three';
-import { Object3D, SphereGeometry, Vector3 } from '../build/three.module.js';
+import { loadGLTFFile } from './geometries.js';
 import getPlayerPosition, { GAME_SPEED, scene } from './main.js';
 import Projectile from './projectile.js';
 
 export default class Enemy extends THREE.Object3D{
 
-    constructor(obj, type = 'A', isGrounded = false, direction = -1){
+    constructor(/* obj,  */type = 'A', isGrounded = false, direction = -1){
         super();
         //var mesh = new THREE.Mesh(geometry, material);
-        console.log(obj);
+        loadGLTFFile("E1", true, 40, this)
         //this.add(obj);
         this.direction = direction;
         this.ZSpeed = (isGrounded ? GAME_SPEED : 0.9) * (type == 'B' ? direction*-1 : 1 );
