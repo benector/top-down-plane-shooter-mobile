@@ -1,15 +1,9 @@
 import * as THREE from  'three';
-import { Object3D } from '../build/three.module.js';
 import { buildHealerGeometry, E1, E2, E3, launcher } from './geometries.js';
-import { createEnemy, createRecharge, scene } from './main.js';
-import Enemy from './enemy.js';
-
-let enemyGeometry = /* new THREE.ConeGeometry( 8, 3, 3 ); */buildHealerGeometry();
-let enemyMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 255)"} );
-//console.table(E1.children);
+import { createEnemy, createRecharge} from './main.js';
 
 
-let rechargeGeometry = new THREE.SphereGeometry(6);
+let rechargeGeometry = buildHealerGeometry();
 let rechargeMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 0, 0)"} );
 //TIPO A: createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
 
@@ -18,8 +12,8 @@ function delay(time) {
   }
 
 export default async function playLevel(){
-    await delay(1500);
-    /* createEnemy(-50, 70, -170, E1);
+    await delay(2500);
+    createEnemy(-50, 70, -170, E1);
     await delay(800);
     createEnemy(50, 70, -170, E1);
     await delay(800);
@@ -41,6 +35,7 @@ export default async function playLevel(){
     createEnemy(70, 6, -250, launcher, 'A', true);
     createEnemy(-50, 70, -170, E1);
     await delay(800);
+    createRecharge(-50, 70, -170, rechargeGeometry, rechargeMaterial);
     createEnemy(-70, 6, -250, launcher, 'A', true);
     createEnemy(-120, 70, -170, E1);
     await delay(6500);
@@ -69,13 +64,14 @@ export default async function playLevel(){
     createEnemy(50, 70, -150, E2, 'D', false, -1);
     await delay(600);
     createEnemy(0, 70, -150, E2, 'D', false, -1);
+    createRecharge(-30, 70, -170, rechargeGeometry, rechargeMaterial);
     await delay(600);
     createEnemy(-50, 70, -150, E2, 'D', false, -1);
     await delay(600);
     createEnemy(100, 6, -300, launcher, 'A', true);
     await delay(600);
     createEnemy(150, 6, -300, launcher, 'A', true);
-    await delay(6500); */
+    await delay(6500);
 
     createEnemy(-150, 6, -300, launcher, 'A', true);
     await delay(600);
@@ -87,6 +83,7 @@ export default async function playLevel(){
     createEnemy(-360, 70, -120, E1, 'B');
     await delay(1000);
     createEnemy(-360, 70, -120, E1, 'B');
+    createRecharge(-120, 70, -170, rechargeGeometry, rechargeMaterial);
     await delay(1000);
     createEnemy(-360, 70, -120, E1, 'B');
     await delay(7500);
@@ -133,6 +130,7 @@ export default async function playLevel(){
     createEnemy(360, 70, 140, E1, 'B', false, 1);
     await delay(400);
     createEnemy(10, 6, -250, launcher, 'A', true);
+    createRecharge(50, 70, -170, rechargeGeometry, rechargeMaterial);
     await delay(7500);
 
     createEnemy(0, 70, -170, E1);
@@ -144,6 +142,7 @@ export default async function playLevel(){
     await delay(1000);
     createEnemy(-80, 70, -170, E1);
     createEnemy(80, 70, -170, E1);
+    createRecharge(0, 70, -170, rechargeGeometry, rechargeMaterial);
     await delay(1000);
     createEnemy(-120, 70, -170, E1);
     createEnemy(120, 70, -170, E1);

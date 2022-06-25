@@ -102,9 +102,9 @@ const max = 170;
 let recharges = [];
 let usedRecharges = [];
 
-export function createRecharge(geometry, material){
+export function createRecharge(x, y, z, geometry, material){
   let recharge = new Recharge(geometry,material);
-  recharge.position.set(Math.random() * (max - min + 1) + min +5,70.0, -170.0);
+  recharge.position.set(x, y, z);
   scene.add(recharge);
   recharges.push(recharge);
 
