@@ -15,6 +15,7 @@ import {intersectBoxes, intersectSphereBox} from './collision.js';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
 import playLevel from './level.js';
 import Missile from './missile.js';
+import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
 
 export var scene;
@@ -59,10 +60,6 @@ export default function getPlayerPosition(){
 
 //criação e movimentação dos inimigos
 
-//min e max são variáveis para serem o range daposição X dos inimigos para que sejam gerados dentro do plano
-
-const min = -170;
-const max = 170;
 
 export function createEnemy 
   (x, y, z,
@@ -99,6 +96,34 @@ function moveEnemies(){
   }
 }
 
+//recargas 
+const min = -170;
+const max = 170;
+let recharges = [];
+let usedRecharges = [];
+
+export function createRecharge(geometry, material){
+  let recharge = new Recharge(geometry,material);
+  recharge.position.set(Math.random() * (max - min + 1) + min +5,70.0, -170.0);
+  scene.add(recharge);
+  recharges.push(recharge);
+
+}
+
+function moveRecharges(){
+  for(let i =0; i < recharges.length; i++)
+  {
+    if(recharges[i].canMove()){
+      recharges[i].move();
+    }
+    else{
+      scene.remove(recharges[i]);
+      recharges[i].geometry.dispose();
+      recharges[i].material.dispose();
+      recharges.splice(i, 1);
+    }
+  }
+}
 let windowOnFocus = true
 
 document.addEventListener("visibilitychange", (event) => {
@@ -109,11 +134,8 @@ document.addEventListener("visibilitychange", (event) => {
   }
 });
 
-//criação e movimentação dos inimigos
-let iterations = 0;
-
+//criação e movimentação dos inimigos e recargas
 playLevel();
-
 
 render();
 
@@ -211,6 +233,18 @@ function checkCollisions(){
       } 
     }
   }
+
+  //colisãoa vião e itens de recarga
+  for(let i =0; i<recharges.length; i++){
+    if(intersectSphereBox(recharges[i], airplane.children[0])){
+      if(!godMode)
+        airplane.fix();
+        scene.remove(recharges[i]);
+        usedRecharges.push(recharges[i]);
+        recharges.splice(i,1);
+        updateDamageView();
+    }
+  }
 }
 
 //checagem de danos
@@ -267,6 +301,12 @@ function gameOver(){
       scene.remove(enemy);
     });
     dyingEnemies = [];
+
+    recharges.forEach(recharge=>{
+      scene.remove(recharge)
+    })
+    recharges = [];
+    usedRecharges = [];
   }
 }
 
@@ -320,7 +360,7 @@ damageControl.show();
 damageControl.updateDamage(airplane.getDamage())
 
 function updateDamageView(){
-  damageControl.updateDamage(airplane.getDamage())
+  damageControl.updateDamage(airplane.getDamage(), playerDead)
 }
 
 function render()
@@ -328,6 +368,7 @@ function render()
   movingPlanes();
   keyboardUpdate();
   moveEnemies();
+  moveRecharges();
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
   if(!shooting)

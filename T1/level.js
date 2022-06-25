@@ -1,13 +1,17 @@
 import * as THREE from  'three';
 import { Object3D } from '../build/three.module.js';
 import { buildHealerGeometry, E1, E2, E3, launcher } from './geometries.js';
-import { createEnemy} from './main.js';
+import { createEnemy, createRecharge, scene } from './main.js';
+import Enemy from './enemy.js';
 
 let enemyGeometry = /* new THREE.ConeGeometry( 8, 3, 3 ); */buildHealerGeometry();
 let enemyMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 255)"} );
 //console.table(E1.children);
 
-//TIPO A: createEnemy(-50, 70, -170, E1);
+
+let rechargeGeometry = new THREE.SphereGeometry(6);
+let rechargeMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 0, 0)"} );
+//TIPO A: createEnemy(-50, 70, -170, enemyGeometry, enemyMaterial);
 
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
