@@ -1,11 +1,12 @@
 import * as THREE from  'three';
-import { GAME_SPEED, scene } from './main.js';
+import { GAME_SPEED } from './main.js';
 
 export default class Recharge extends THREE.Mesh{
     constructor(geometry, material){
         super(geometry, material);
         this.geometry.computeBoundingSphere();
         this.ZSpeed = GAME_SPEED;
+        this.castShadow = true;
     }
     
     canMove(){

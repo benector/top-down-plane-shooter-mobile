@@ -1,7 +1,7 @@
 import * as THREE from  'three';
 import { Box3, Sphere } from '../build/three.module.js';
 
-// verificar intersecção entre projétil e inimigo
+// verificar interseção entre esfera e caixa
 
 export function intersectSphereBox(sphere, box) {
     //bounding sphere do projétil
@@ -15,7 +15,7 @@ export function intersectSphereBox(sphere, box) {
     return BBox.intersectsSphere(BSphere);
 }
 
-// verificar intersecção entre jogador e inimigo
+// verificar interseção entre caixas
 
 export function intersectBoxes(box1, box2) {
     //bounding box do jogador

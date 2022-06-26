@@ -1,6 +1,6 @@
 import * as THREE from  'three';
 import { buildHealerGeometry, E1, E2, E3, launcher } from './geometries.js';
-import { createEnemy, createRecharge} from './main.js';
+import { createEnemy, createRecharge, finishLevel} from './main.js';
 
 
 let rechargeGeometry = buildHealerGeometry();
@@ -13,7 +13,7 @@ function delay(time) {
 
 export default async function playLevel(){
     await delay(2500);
-    /* createEnemy(-50, 70, -170, E1);
+    createEnemy(-50, 70, -170, E1);
     await delay(800);
     createEnemy(50, 70, -170, E1);
     await delay(800);
@@ -87,7 +87,7 @@ export default async function playLevel(){
     await delay(1000);
     createEnemy(-360, 70, -120, E1, 'B');
     await delay(7500);
- */
+
     createEnemy(0, 70, -200, E3, 'C', false, -1);
     await delay(800);
     createEnemy(200, 70, -150, E2, 'D', false, -1);
@@ -176,6 +176,9 @@ export default async function playLevel(){
     createEnemy(80, 70, -170, E1);
     createEnemy(100, 6, -250, launcher, 'A', true);
     createEnemy(-100, 6, -250, launcher, 'A', true);
+    await delay(18500);
+
+    finishLevel();
 
 }
 

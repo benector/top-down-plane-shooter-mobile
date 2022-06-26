@@ -1,16 +1,14 @@
 import * as THREE from  'three';
-import { degreesToRadians } from '../libs/util/util.js';
 import { plane } from './geometries.js';
 
 export default class Airplane extends THREE.Object3D{
     
-    constructor(geometry, material){
+    constructor(){
         super();
         //esse objeto na verdade é o holder do avião feito para manter os eixos de direção
         //que seriam perdidos caso o cone fosse rotacionado na horizontal pra parecer uma avião
         //então o avião é rotacionado e adicionado ao holder do avião
         this.position.set(0.0, 70.0, 40.0);
-        let localScale = 1.0
         this.add(plane);
         this.children[0].scale.x = 2
         this.children[0].scale.y = 2
@@ -18,6 +16,8 @@ export default class Airplane extends THREE.Object3D{
         this.damage = 0;
 
     }
+
+    //movimentação
 
     moveLeft(){
         console.log(this.children[0]);
@@ -40,6 +40,8 @@ export default class Airplane extends THREE.Object3D{
         if(this.position.z<140)
         this.translateZ(2.0);
     }
+
+    //dano
     
     hit(damage){
         this.damage+=damage;
@@ -57,6 +59,8 @@ export default class Airplane extends THREE.Object3D{
     getDamage(){
         return this.damage;
     }
+
+    //morte
 
     fall(){
         this.rotation.y+=0.08;

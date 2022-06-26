@@ -1,5 +1,4 @@
 import * as THREE from  'three';
-import { degreesToRadians } from "../libs/util/util.js";
 export default class Missile extends THREE.Mesh{
 
     constructor(geometry, material){
