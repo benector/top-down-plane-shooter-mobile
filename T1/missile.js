@@ -7,6 +7,7 @@ export default class Missile extends THREE.Mesh{
         this.rotation.x -= 5;
         this.geometry.computeBoundingBox();
         Missile.missiles.push(this); // adiciona míssil a array de mísseis
+        this.castShadow = true;
     }
 
     static missiles = [];

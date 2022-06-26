@@ -13,7 +13,7 @@ function delay(time) {
 
 export default async function playLevel(){
     await delay(2500);
-    createEnemy(-50, 70, -170, E1);
+    /* createEnemy(-50, 70, -170, E1);
     await delay(800);
     createEnemy(50, 70, -170, E1);
     await delay(800);
@@ -41,19 +41,19 @@ export default async function playLevel(){
     await delay(6500);
 
     createEnemy(0, 70, -200, E3, 'C', false, -1);
-    await delay(800);
+    await delay(1000);
     createEnemy(0, 70, -200, E3, 'C', false, -1);
-    await delay(800);
+    await delay(1000);
     createEnemy(0, 70, -200, E3, 'C', false, -1);
-    await delay(800);
+    await delay(1000);
     createEnemy(0, 70, -200, E3, 'C', false, -1);
     await delay(2200);
     createEnemy(0, 70, -200, E3, 'C', false, 1);
-    await delay(800);
+    await delay(1000);
     createEnemy(0, 70, -200, E3, 'C', false, 1);
-    await delay(800);
+    await delay(1000);
     createEnemy(0, 70, -200, E3, 'C', false, 1);
-    await delay(800);
+    await delay(1000);
     createEnemy(0, 70, -200, E3, 'C', false, 1);
     await delay(7500);
 
@@ -87,14 +87,14 @@ export default async function playLevel(){
     await delay(1000);
     createEnemy(-360, 70, -120, E1, 'B');
     await delay(7500);
-
+ */
     createEnemy(0, 70, -200, E3, 'C', false, -1);
     await delay(800);
-    createEnemy(-200, 70, -150, E2, 'D', false, 1);
+    createEnemy(200, 70, -150, E2, 'D', false, -1);
     await delay(800);
     createEnemy(0, 70, -200, E3, 'C', false, -1);
     await delay(800);
-    createEnemy(-200, 70, -150, E2, 'D', false, 1);
+    createEnemy(200, 70, -150, E2, 'D', false, -1);
     await delay(800);
     createEnemy(0, 70, -200, E3, 'C', false, -1);
     await delay(800);
@@ -170,7 +170,7 @@ export default async function playLevel(){
     await delay(800);
     createEnemy(-360, 70, 0, E1, 'B', false, -1);
     createEnemy(360, 70, 30, E1, 'B', false, 1);
-    await delay(500);
+    await delay(300);
     createEnemy(-80, 70, -170, E1);
     createEnemy(0, 70, -170, E1);
     createEnemy(80, 70, -170, E1);

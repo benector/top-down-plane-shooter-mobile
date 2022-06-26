@@ -17,14 +17,14 @@ import playLevel from './level.js';
 import Missile from './missile.js';
 import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
+import { DirectionalLight, Vector3 } from '../build/three.module.js';
 
 export var scene;
-let renderer, camera, light, orbit, projectileGeometry, projectileMaterial, missileGeometry, missileMaterial; // Initial variables
+let renderer, camera, orbit, projectileGeometry, projectileMaterial, missileGeometry, missileMaterial; // Initial variables
 scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
 orbit = new OrbitControls( camera, renderer.domElement );
-light = initDefaultBasicLight(scene); // Create a basic light to illuminate the scene
 projectileGeometry = new THREE.SphereGeometry(1.5);
 projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 missileGeometry = new THREE.CylinderGeometry(1.8, 1.8, 8, 32);
@@ -34,6 +34,27 @@ var godMode = false;
 var shooting = false;
 var playerDead = false;
 export const GAME_SPEED = 0.8;
+
+var light = new DirectionalLight("rgb(255, 255, 255)");
+light.position.copy(new Vector3(0, 90, 10));
+light.shadow.mapSize.width = 512;
+light.shadow.mapSize.height = 512;
+light.castShadow = true;
+
+light.shadow.camera.near = 0.1;
+light.shadow.camera.far = 900;
+light.shadow.camera.left = -900;
+light.shadow.camera.right = 900;
+light.shadow.camera.top = 500;
+light.shadow.camera.bottom = -500;
+light.name = "Direction Light";
+
+scene.add(light);
+
+var ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white light
+scene.add( ambientLight );
+
+
 
 // Listen window size changes
 window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
