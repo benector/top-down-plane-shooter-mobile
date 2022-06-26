@@ -36,7 +36,7 @@ var playerDead = false;
 export const GAME_SPEED = 0.8;
 
 var light = new DirectionalLight("rgb(255, 255, 255)");
-light.position.copy(new Vector3(0, 90, 10));
+light.position.copy(new Vector3(20, 100, 100));
 light.shadow.mapSize.width = 512;
 light.shadow.mapSize.height = 512;
 light.castShadow = true;
@@ -45,8 +45,8 @@ light.shadow.camera.near = 0.1;
 light.shadow.camera.far = 900;
 light.shadow.camera.left = -900;
 light.shadow.camera.right = 900;
-light.shadow.camera.top = 500;
-light.shadow.camera.bottom = -500;
+light.shadow.camera.top = 900;
+light.shadow.camera.bottom = -900;
 light.name = "Direction Light";
 
 scene.add(light);
