@@ -15,6 +15,7 @@ export default class Projectile extends THREE.Mesh{
         }
         else
             this.rotateY(Math.PI);
+        this.castShadow = true;
     }
 
     static projectiles = [];
