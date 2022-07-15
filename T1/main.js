@@ -351,12 +351,19 @@ plane2.translateY(-GAME_SPEED);
 function keyboardUpdate() {
   
   keyboard.update();
- if ( keyboard.pressed("left") && !playerDead && !levelFinished )     airplane.moveLeft();
- if ( keyboard.pressed("right") && !playerDead && !levelFinished )    airplane.moveRight();
- if ( keyboard.pressed("up") && !playerDead && !levelFinished )       airplane.moveUp();
- if ( keyboard.pressed("down") && !playerDead && !levelFinished )      airplane.moveDown();
- if ( keyboard.pressed("enter") && (levelFinished || playerDead) )      window.location.reload();;
-
+  if ( keyboard.pressed("left") && !playerDead && !levelFinished )     airplane.moveLeft();
+  if ( keyboard.pressed("right") && !playerDead && !levelFinished )    airplane.moveRight();
+  if ( keyboard.pressed("up") && !playerDead && !levelFinished )       airplane.moveUp();
+  if ( keyboard.pressed("down") && !playerDead && !levelFinished )      airplane.moveDown();
+  if ( keyboard.pressed("enter") && (levelFinished || playerDead) )      window.location.reload();
+  if (!keyboard.pressed("left") && !keyboard.pressed("right")){
+    if(airplane.children[0].rotation.z % Math.PI > 0){
+      airplane.children[0].rotateZ(0.1);
+    }
+    if(airplane.children[0].rotation.z % Math.PI < 0){
+      airplane.children[0].rotateZ(-0.1);
+    }
+  }
 }
 
 //Interface pra mapa de teclas
