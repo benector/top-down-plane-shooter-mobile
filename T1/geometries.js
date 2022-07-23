@@ -5,6 +5,7 @@ import {MTLLoader} from '../build/jsm/loaders/MTLLoader.js';
 import {getMaxSize, degreesToRadians} from "../libs/util/util.js";
 import { Object3D } from '../build/three.module.js';
 import { CSG } from '../libs/other/CSGMesh.js' 
+import { Water } from '../build/jsm/objects/Water.js';  // Water shader in here
 
 export function buildHealerGeometry(){
     let auxMat = new THREE.Matrix4();
@@ -55,7 +56,7 @@ export function loadGLTFFile(modelName, visibility, desiredScale, object)
 
     var obj = normalizeAndRescale(obj, desiredScale);
     var obj = fixPosition(obj);
-    obj.children[0].children[(modelName == "plane" ? 0 : 1)].children.forEach(mesh => {
+    obj.children[0].children[(modelName == "plane" || modelName =="vale" ? 0 : 1)].children.forEach(mesh => {
         if(modelName == "E1")
             mesh.rotateY(Math.PI/2)
         object.add(mesh.clone());
@@ -153,3 +154,6 @@ loadOBJFile("launcher", true, 1, launcher);
 launcher.scale.x = 0.01
 launcher.scale.y = 0.01
 launcher.scale.z = 0.01
+
+export let vale = new Object3D;
+loadGLTFFile("vale", true, 1, vale);

@@ -15,12 +15,14 @@ import Missile from './missile.js';
 import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
 import { DirectionalLight, Vector3 } from '../build/three.module.js';
+import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
 
 export var scene;
 let renderer, camera, orbit; // Initial variables
 scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
+orbit = new OrbitControls( camera, renderer.domElement ); //enable mouse control
 
 var godMode = false;
 var shooting = false;
@@ -54,6 +56,7 @@ window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)},
 
 // To use the keyboard
 var keyboard = new KeyboardState();
+
 
 // create the 2 ground planes
 let plane = createGroundPlaneWired(485, 600,40,40)
@@ -365,6 +368,12 @@ function keyboardUpdate() {
     }
   }
 }
+
+
+
+
+
+
 
 //Interface pra mapa de teclas
 let controls = new InfoBox();
