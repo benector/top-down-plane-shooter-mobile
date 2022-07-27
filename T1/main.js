@@ -61,6 +61,7 @@ window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)},
 // To use the keyboard
 var keyboard = new KeyboardState();
 
+
 // create the 2 ground planes
 let plane = createGroundPlaneWired(485, 600,40,40)
 scene.add(plane);
@@ -385,6 +386,12 @@ function keyboardUpdate() {
     }
   }
 }
+
+
+
+
+
+
 
 //Interface pra mapa de teclas
 let controls = new InfoBox();

@@ -48,6 +48,7 @@ let water = new Water(
     distortionScale: 3.7,
   }
 );
+water.opacity = 0;
 water.rotation.x = - Math.PI / 2;
 scene.add( water );
 
