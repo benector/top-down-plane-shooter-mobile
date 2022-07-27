@@ -1,45 +1,55 @@
 import * as THREE from  'three';
-import { Vector3 } from '../build/three.module.js';
+import { degreesToRadians, radiansToDegrees } from '../libs/util/util.js';
 import getPlayerPosition, { GAME_SPEED } from './main.js';
 
-export default class Projectile extends THREE.Mesh{
+export default class Projectile extends THREE.Object3D{
 
-    constructor(geometry, material, isEnemy = false, playerPosition){
-        super(geometry, material); //Mesh constructor
+    constructor(geometry, material, isEnemy = false, isGrounded = false){
+        super(); //Mesh constructor
+        this.add(new THREE.Mesh(geometry, material));
         this.isEnemy = isEnemy;
-        this.geometry.computeBoundingSphere(); // gera bounding sphere do projétil
+        this.isGrounded = isGrounded;
+        this.children[0].geometry.computeBoundingSphere(); // gera bounding sphere do projétil
         Projectile.projectiles.push(this); // adiciona projétil a array de projéteis
         this.speed = 6;
         if(isEnemy){
             this.speed = 1.7;
+        } else {
+            this.speed = -7.7;
         }
-        else
-            this.rotateY(Math.PI);
-        this.castShadow = true;
+        this.children[0].castShadow = true;
+        this.rotationX = 0;
     }
 
     static projectiles = [];
 
     static moveProjectiles(scene){
         for(let i = 0; i<Projectile.projectiles.length; i++){
-            let absolutePosition = new THREE.Vector3();
             Projectile.projectiles[i].updateMatrixWorld();
-            Projectile.projectiles[i].localToWorld(absolutePosition); // calcula posição do projétil em relação à origem
-
-            if(absolutePosition.y >= 70){
+            // calcula posição do projétil em relação à origem
+            let absolutePosition = new THREE.Vector3();
+            Projectile.projectiles[i].children[0].localToWorld(absolutePosition);
+            if(!Projectile.projectiles[i].isGrounded){
                 Projectile.projectiles[i].translateZ(Projectile.projectiles[i].speed); // movimenta projétil para frente
-            } else {  // movimenta projétil para cima
-                Projectile.projectiles[i].translateY(Projectile.projectiles[i].speed/1.5);
+            } else {  
+                //movimentação do projétil terrestre
                 Projectile.projectiles[i].translateZ(GAME_SPEED);
-                if(Projectile.projectiles[i].position.y>=70){   // aponta projétil para o jogador
-                    let playerPosition = getPlayerPosition();
-                    Projectile.projectiles[i].lookAt(playerPosition.x, Projectile.projectiles[i].position.y, playerPosition.z);
+                if(Projectile.projectiles[i].position.y < 70){
+                    // movimenta projétil para cima
+                    Projectile.projectiles[i].translateY(Projectile.projectiles[i].speed/1.5);
+                } else {
+                    //rotaciona projétil
+                    if(Projectile.projectiles[i].rotationX < 6){
+                        Projectile.projectiles[i].children[0].rotateX(Math.PI/12);
+                        Projectile.projectiles[i].rotationX++;
+                    } else {
+                        Projectile.projectiles[i].children[0].translateY(Projectile.projectiles[i].speed);
+                    }
                 }
             }
 
-
-
-            if(absolutePosition.z <= -170 || absolutePosition.z >= 150 || absolutePosition.x >= 370 || absolutePosition.x <= -370){ // remove projétil se estiver fora dos limites
+            if(absolutePosition.z <= -190 || absolutePosition.z >= 150 || absolutePosition.x >= 370 || absolutePosition.x <= -370){ 
+                // remove projétil se estiver fora dos limites
                 scene.remove(Projectile.projectiles[i]); 
                 Projectile.projectiles.splice(i, 1); 
             } 

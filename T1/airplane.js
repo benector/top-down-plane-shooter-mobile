@@ -22,7 +22,6 @@ export default class Airplane extends THREE.Object3D{
     moveLeft(){
         if((this.children[0].rotation.z > 2.5 && this.children[0].rotation.z>=0) || (this.children[0].rotation.z < -2.2 && this.children[0].rotation.z<=0))
             this.children[0].rotateZ(-0.3);
-        console.log(this.children[0].rotation.z);
         if(this.position.x>-180)
             this.translateX(-2.0);
     }
@@ -30,7 +29,6 @@ export default class Airplane extends THREE.Object3D{
     moveRight(){
         if((this.children[0].rotation.z > 2.2 && this.children[0].rotation.z>=0) || (this.children[0].rotation.z < -2.5 && this.children[0].rotation.z<=0))
             this.children[0].rotateZ(0.3);
-        console.log(this.children[0].rotation.z);
         if(this.position.x<180)
             this.translateX(2.0);
     }

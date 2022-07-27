@@ -14,19 +14,25 @@ import playLevel from './level.js';
 import Missile from './missile.js';
 import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
-import { DirectionalLight, Vector3 } from '../build/three.module.js';
+import { DirectionalLight, Object3D, Vector3 } from '../build/three.module.js';
+import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
+import { loadGLTFFile } from './geometries.js';
 
 export var scene;
 let renderer, camera, orbit; // Initial variables
 scene = new THREE.Scene();    // Create main scene
+export var scroller = new Object3D();
+scene.add(scroller);
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
+orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
 
 var godMode = false;
 var shooting = false;
 var playerDead = false;
 var levelFinished;
-export const GAME_SPEED = 0.8;
+var pause = false;
+export const GAME_SPEED = 0.3;
 
 //iluminação
 
@@ -161,17 +167,17 @@ let projectileGeometry = new THREE.SphereGeometry(1.5);
 let projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 
 async function spawnProjectiles(){
-  keyboard.update();
-  while(keyboard.pressed("ctrl")){
-    if(playerDead)
-      break;
-    shooting = true;
-    let projectile = new Projectile(projectileGeometry, projectileMaterial);
-    projectile.position.set(airplane.position.x, airplane.position.y, airplane.position.z - 10);
-    scene.add(projectile);
-    await delay(500);
-  }
-  shooting = false;
+  //console.log("aaa");
+  if(playerDead)
+    return;
+  let projectile = new Projectile(projectileGeometry, projectileMaterial);
+  projectile.position.set(airplane.position.x, airplane.position.y, airplane.position.z - 10);
+  scene.add(projectile);
+  if(!shooting)
+    return;
+  await delay(500);
+  if(shooting)
+    spawnProjectiles();
 }
 
 //lançamento de misseis
@@ -187,15 +193,6 @@ function launchMissile(){
   scene.add(missile);
 }
 
-//modo de testes
-
-window.addEventListener('keydown', function(e) {
-  if(e.key == ' ')
-    launchMissile();
-  if(e.key == 'g')
-    godMode = !godMode;
-});
-
 //colisões
 
 function checkCollisions(){
@@ -203,7 +200,7 @@ function checkCollisions(){
     //colidir inimigos aéreos com projéteis
     for(let i = 0; i<Projectile.projectiles.length; i++){
       if(!(Projectile.projectiles[i].isEnemy) && enemies[j].position.y > 60){
-        if(intersectSphereBox(Projectile.projectiles[i], enemies[j])){
+        if(intersectSphereBox(Projectile.projectiles[i].children[0], enemies[j])){
           enemies[j].isDead = true;
           dyingEnemies.push(enemies[j]);
           enemies.splice(j,1);
@@ -243,13 +240,13 @@ function checkCollisions(){
   //colidir projéteis do inimigo com jogador
   for(let i = 0; i<Projectile.projectiles.length; i++){
     if(Projectile.projectiles[i].isEnemy){
-      if(intersectSphereBox(Projectile.projectiles[i], airplane.children[0])){
+      if(intersectSphereBox(Projectile.projectiles[i].children[0], airplane.children[0])){
         if(!godMode)
           airplane.hit(1);
         updateDamageView();
         scene.remove(Projectile.projectiles[i]);
-        Projectile.projectiles[i].geometry.dispose();
-        Projectile.projectiles[i].material.dispose();
+        Projectile.projectiles[i].children[0].geometry.dispose();
+        Projectile.projectiles[i].children[0].material.dispose();
         Projectile.projectiles.splice(i, 1);
       } 
     }
@@ -299,8 +296,8 @@ function gameOver(){
 
     Projectile.projectiles.forEach(projectile => {
       scene.remove(projectile);
-      projectile.geometry.dispose();
-      projectile.material.dispose();
+      projectile.children[0].geometry.dispose();
+      projectile.children[0].material.dispose();
     });
     Projectile.projectiles = [];
 
@@ -348,14 +345,37 @@ plane2.translateY(-GAME_SPEED);
 
 // controle do avião por teclado
 
+window.addEventListener('keydown', function(e) {
+  if(e.key == ' ')
+    launchMissile();
+  if(e.key == 'g')
+    godMode = !godMode;
+  if(e.key == 'p')
+    pause = !pause;
+  if(e.key == 'Control'){
+    console.log("tiro");
+    if(!shooting){
+      shooting = true;
+      spawnProjectiles();
+    }
+  }
+});
+
+window.addEventListener('keyup', function(e) {
+  if(e.key == 'Control'){
+    shooting = false;
+    console.log("para");
+  }
+});
+
 function keyboardUpdate() {
   
   keyboard.update();
   if ( keyboard.pressed("left") && !playerDead && !levelFinished )     airplane.moveLeft();
   if ( keyboard.pressed("right") && !playerDead && !levelFinished )    airplane.moveRight();
   if ( keyboard.pressed("up") && !playerDead && !levelFinished )       airplane.moveUp();
-  if ( keyboard.pressed("down") && !playerDead && !levelFinished )      airplane.moveDown();
-  if ( keyboard.pressed("enter") && (levelFinished || playerDead) )      window.location.reload();
+  if ( keyboard.pressed("down") && !playerDead && !levelFinished )     airplane.moveDown();
+  if ( keyboard.pressed("enter") && (levelFinished || playerDead) )    window.location.reload();                                     
   if (!keyboard.pressed("left") && !keyboard.pressed("right")){
     if(airplane.children[0].rotation.z % Math.PI > 0){
       airplane.children[0].rotateZ(0.1);
@@ -395,23 +415,25 @@ export function finishLevel(){
 
 function render()
 {
-  movingPlanes();
+  scroller.translateZ(GAME_SPEED);
   keyboardUpdate();
-  moveEnemies();
-  moveRecharges();
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
-  if(!levelFinished){
-    if(!shooting)
-      spawnProjectiles();
-    Projectile.moveProjectiles(scene);
-    Missile.moveMissiles(scene);
-    checkCollisions();
-    removeEnemies();
-    checkPlaneDamage();
+  if(!pause){
+    movingPlanes();
+    moveEnemies();
+    moveRecharges();
+    if(!levelFinished){
+      // if(!shooting)
+      //   spawnProjectiles();
+      Projectile.moveProjectiles(scene);
+      Missile.moveMissiles(scene);
+      checkCollisions();
+      removeEnemies();
+      checkPlaneDamage();
+    }
+    if(playerDead){
+      gameOver();
+    }
   }
-  if(playerDead){
-    gameOver();
-  }
-
 }

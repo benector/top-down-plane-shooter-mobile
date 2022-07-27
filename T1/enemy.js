@@ -1,5 +1,6 @@
 import * as THREE from  'three';
-import getPlayerPosition, { GAME_SPEED, scene } from './main.js';
+import { radiansToDegrees } from '../libs/util/util.js';
+import getPlayerPosition, { GAME_SPEED, scene, scroller } from './main.js';
 import Projectile from './projectile.js';
 
 export default class Enemy extends THREE.Object3D{
@@ -74,22 +75,35 @@ export default class Enemy extends THREE.Object3D{
     }
 
     async shoot(){
-        await this.delay(1000);
+        await this.delay(1500);
         if(!this.canShoot || this.isDead)
             return;
         this.canShoot = false;
-        let projectile = new Projectile(new THREE.SphereGeometry(2.8),
+        let projectileGeometry = this.isGrounded ? new THREE.CylinderGeometry(0.1, 1.8, 8, 32) : new THREE.SphereGeometry(2.8);
+        let projectile = new Projectile(projectileGeometry,
                             new THREE.MeshLambertMaterial( {color: "rgb(255, 150, 60)"} ),
-                            true);
+                            true,
+                            this.isGrounded);
         projectile.translateX(this.position.x);
         projectile.translateY(this.position.y);
         projectile.translateZ(this.position.z);
 
-        if(!this.isGrounded){
-            projectile.lookAt(getPlayerPosition());
+        let playerPosition = getPlayerPosition();
+        projectile.updateMatrixWorld();
+        let absolutePosition = new THREE.Vector3();
+        projectile.children[0].localToWorld(absolutePosition);
+        let tan = playerPosition.x == absolutePosition.x ? 0 : (playerPosition.z - absolutePosition.z) / (playerPosition.x - absolutePosition.x);
+        let angle;
+        if(playerPosition.x > absolutePosition.x){
+            angle = Math.PI/2 - Math.atan(tan);
+        } else if(playerPosition.x < absolutePosition.x){
+            angle = -1 * (Math.PI/2 - Math.atan(-1 * tan));
+        } else {
+            angle = 0;
         }
+        projectile.children[0].rotateY(angle);
         scene.add(projectile);
-        await this.delay(this.type == 'B' ? 3500 : 2500);
+        await this.delay(this.type == 'B' ? 3500 : 5500);
         this.canShoot = true;
     }
 

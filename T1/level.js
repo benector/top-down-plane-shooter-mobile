@@ -13,23 +13,23 @@ function delay(time) {
 
 export default async function playLevel(){
     await delay(2500);
-    createEnemy(-50, 70, -170, E1);
-    await delay(800);
-    createEnemy(50, 70, -170, E1);
-    await delay(800);
-    createEnemy(100, 70, -170, E1);
-    await delay(800);
-    createEnemy(-100, 70, -170, E1);
-    await delay(800);
-    createEnemy(150, 70, -170, E1);
-    await delay(800);
-    createEnemy(70, 70, -170, E1);
-    await delay(800);
-    createEnemy(-10, 70, -170, E1);
-    await delay(5500);
+    // createEnemy(-50, 70, -170, E1);
+    // await delay(800);
+    // createEnemy(50, 70, -170, E1);
+    // await delay(800);
+    // createEnemy(100, 70, -170, E1);
+    // await delay(800);
+    // createEnemy(-100, 70, -170, E1);
+    // await delay(800);
+    // createEnemy(150, 70, -170, E1);
+    // await delay(800);
+    // createEnemy(70, 70, -170, E1);
+    // await delay(800);
+    // createEnemy(-10, 70, -170, E1);
+    // await delay(5500);
 
-    createEnemy(-100, 6, -250, launcher, 'A', true);
-    await delay(800);
+    createEnemy(0, 6, -250, launcher, 'A', true);
+    await delay(999999999);
     createEnemy(150, 6, -250, launcher, 'A', true);
     await delay(800);
     createEnemy(70, 6, -250, launcher, 'A', true);
