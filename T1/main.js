@@ -168,7 +168,6 @@ let projectileGeometry = new THREE.SphereGeometry(1.5);
 let projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 
 async function spawnProjectiles(){
-  //console.log("aaa");
   if(playerDead)
     return;
   let projectile = new Projectile(projectileGeometry, projectileMaterial);
@@ -354,7 +353,6 @@ window.addEventListener('keydown', function(e) {
   if(e.key == 'p')
     pause = !pause;
   if(e.key == 'Control'){
-    console.log("tiro");
     if(!shooting){
       shooting = true;
       spawnProjectiles();
@@ -365,7 +363,6 @@ window.addEventListener('keydown', function(e) {
 window.addEventListener('keyup', function(e) {
   if(e.key == 'Control'){
     shooting = false;
-    console.log("para");
   }
 });
 

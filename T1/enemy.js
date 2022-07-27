@@ -89,19 +89,23 @@ export default class Enemy extends THREE.Object3D{
         projectile.translateZ(this.position.z);
 
         let playerPosition = getPlayerPosition();
-        projectile.updateMatrixWorld();
-        let absolutePosition = new THREE.Vector3();
-        projectile.children[0].localToWorld(absolutePosition);
-        let tan = playerPosition.x == absolutePosition.x ? 0 : (playerPosition.z - absolutePosition.z) / (playerPosition.x - absolutePosition.x);
-        let angle;
-        if(playerPosition.x > absolutePosition.x){
-            angle = Math.PI/2 - Math.atan(tan);
-        } else if(playerPosition.x < absolutePosition.x){
-            angle = -1 * (Math.PI/2 - Math.atan(-1 * tan));
+        if(this.isGrounded){
+            projectile.updateMatrixWorld();
+            let absolutePosition = new THREE.Vector3();
+            projectile.children[0].localToWorld(absolutePosition);
+            let tan = playerPosition.x == absolutePosition.x ? 0 : (playerPosition.z - absolutePosition.z) / (playerPosition.x - absolutePosition.x);
+            let angle;
+            if(playerPosition.x > absolutePosition.x){
+                angle = Math.PI/2 - Math.atan(tan);
+            } else if(playerPosition.x < absolutePosition.x){
+                angle = -1 * (Math.PI/2 - Math.atan(-1 * tan));
+            } else {
+                angle = 0;
+            }
+            projectile.children[0].rotateY(angle);
         } else {
-            angle = 0;
+            projectile.lookAt(playerPosition);
         }
-        projectile.children[0].rotateY(angle);
         scene.add(projectile);
         await this.delay(this.type == 'B' ? 3500 : 5500);
         this.canShoot = true;

@@ -56,11 +56,16 @@ export function loadGLTFFile(modelName, visibility, desiredScale, object)
 
     var obj = normalizeAndRescale(obj, desiredScale);
     var obj = fixPosition(obj);
-    obj.children[0].children[(modelName == "plane" || modelName =="vale" ? 0 : 1)].children.forEach(mesh => {
-        if(modelName == "E1")
-            mesh.rotateY(Math.PI/2)
-        object.add(mesh.clone());
-    });
+    console.log(object);
+    if(modelName == "vale"){
+      object.add(obj.children[0].clone());
+    } else {
+      obj.children[0].children[(modelName == "plane" ? 0 : 1)].children.forEach(mesh => {
+          if(modelName == "E1")
+              mesh.rotateY(Math.PI/2)
+          object.add(mesh.clone());
+      });
+    }
     }, onProgress, onError);
 }
 
@@ -94,7 +99,6 @@ function loadOBJFile(modelName, visibility, desiredScale, object)
           var obj = normalizeAndRescale(obj, desiredScale);
           var obj = fixPosition(obj);
 
-          console.log(obj);
           obj.children.forEach(mesh => {
             object.add(mesh.clone());
         });
