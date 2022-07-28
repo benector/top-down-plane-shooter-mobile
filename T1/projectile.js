@@ -1,6 +1,5 @@
 import * as THREE from  'three';
-import { degreesToRadians, radiansToDegrees } from '../libs/util/util.js';
-import getPlayerPosition, { GAME_SPEED } from './main.js';
+import { GAME_SPEED } from './main.js';
 
 export default class Projectile extends THREE.Object3D{
 

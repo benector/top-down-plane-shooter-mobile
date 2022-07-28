@@ -56,6 +56,7 @@ loadGLTFFile('assets/', 'E1', false, 2.0);
 loadGLTFFile('assets/', 'E2', false, 2.0);
 loadGLTFFile('assets/', 'E3', false, 2.0);
 loadGLTFFile('assets/', 'Plane', false, 2.0);
+loadGLTFFile('assets/', 'vale', false, 2.0);
 
 buildInterface();
 render();
@@ -224,7 +225,7 @@ function buildInterface()
   var gui = new GUI();
   gui.add(controls, 'type',
     ['Object0', 'Object1', 'Object2', 'Object3',
-      'Object4'])
+      'Object4', 'Object5'])
     .name("Change Object")
     .onChange(function(e) { controls.onChooseObject(); });
   gui.add(controls, 'viewAxes', false)
