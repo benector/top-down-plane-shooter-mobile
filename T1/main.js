@@ -16,14 +16,16 @@ import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
 import { DirectionalLight, Object3D, Vector3 } from '../build/three.module.js';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
+<<<<<<< HEAD
 import { loadGLTFFile } from './geometries.js';
 import { Water } from './jsm/objects/Water2.js';
+=======
+>>>>>>> c17e8994de56ad140ec668d30731c04b9ce7163e
 
+export var frameCounter = 0;
 export var scene;
 let renderer, camera, orbit; // Initial variables
 scene = new THREE.Scene();    // Create main scene
-export var scroller = new Object3D();
-scene.add(scroller);
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
 orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
@@ -400,12 +402,6 @@ function keyboardUpdate() {
   }
 }
 
-
-
-
-
-
-
 //Interface pra mapa de teclas
 let controls = new InfoBox();
   controls.add("Plane Shooter");
@@ -435,17 +431,15 @@ export function finishLevel(){
 
 function render()
 {
-  scroller.translateZ(GAME_SPEED);
   keyboardUpdate();
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
   if(!pause){
+    frameCounter ++;
     movingPlanes();
     moveEnemies();
     moveRecharges();
     if(!levelFinished){
-      // if(!shooting)
-      //   spawnProjectiles();
       Projectile.moveProjectiles(scene);
       Missile.moveMissiles(scene);
       checkCollisions();
