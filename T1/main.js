@@ -16,11 +16,8 @@ import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
 import { Clock, DirectionalLight, Object3D, Vector3 } from '../build/three.module.js';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
-<<<<<<< HEAD
 import { loadGLTFFile } from './geometries.js';
 import { Water } from './jsm/objects/Water2.js';
-=======
->>>>>>> c17e8994de56ad140ec668d30731c04b9ce7163e
 
 var frameCounter = 0;
 export const scene = new THREE.Scene();    // Create main scene;
