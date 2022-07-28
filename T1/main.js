@@ -16,6 +16,11 @@ import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
 import { Clock, DirectionalLight, Object3D, Vector3 } from '../build/three.module.js';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
+<<<<<<< HEAD
+import { loadGLTFFile } from './geometries.js';
+import { Water } from './jsm/objects/Water2.js';
+=======
+>>>>>>> c17e8994de56ad140ec668d30731c04b9ce7163e
 
 var frameCounter = 0;
 export const scene = new THREE.Scene();    // Create main scene;
@@ -71,6 +76,21 @@ let plane2 = createGroundPlaneWired(485, 600,40,40,"rgb(100,100,20)")
 plane2.translateY(600);
 scene.add(plane2);
 
+				// water
+
+				const waterGeometry = new THREE.PlaneGeometry( 20, 20 );
+
+				water = new Water( waterGeometry, {
+					color: params.color,
+					scale: params.scale,
+					flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+					textureWidth: 1024,
+					textureHeight: 1024
+				} );
+
+				water.position.y = 1;
+				water.rotation.x = Math.PI * - 0.5;
+				scene.add( water );
 
 // criação do avião
 var airplane = new Airplane();
