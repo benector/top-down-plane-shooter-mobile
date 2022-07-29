@@ -5,7 +5,8 @@ import {initRenderer,
         initCamera,
         onWindowResize, 
         InfoBox,
-      createGroundPlaneWired} from "../libs/util/util.js";
+      createGroundPlaneWired,
+      degreesToRadians} from "../libs/util/util.js";
 import Airplane from './airplane.js';
 import Enemy from './enemy.js';
 import Projectile from './projectile.js';
@@ -14,18 +15,16 @@ import playLevel from './level.js';
 import Missile from './missile.js';
 import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
-import { DirectionalLight, Object3D, Vector3 } from '../build/three.module.js';
+import { DirectionalLight, Object3D, Plane, Vector3 } from '../build/three.module.js';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
-<<<<<<< HEAD
-import { loadGLTFFile } from './geometries.js';
-import { Water } from './jsm/objects/Water2.js';
-=======
->>>>>>> c17e8994de56ad140ec668d30731c04b9ce7163e
+import { loadGLTFFile, vale, vale2 } from './geometries.js';
+import { Water } from '../build/jsm/objects/Water2.js';
 
-export var frameCounter = 0;
 export var scene;
 let renderer, camera, orbit; // Initial variables
 scene = new THREE.Scene();    // Create main scene
+export var scroller = new Object3D();
+scene.add(scroller);
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
 orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
@@ -66,22 +65,43 @@ var keyboard = new KeyboardState();
 
 
 // create the 2 ground planes
-let plane = createGroundPlaneWired(485, 600,40,40)
+let plane = new Object3D();
+plane.add(vale);
+plane.rotateX(-Math.PI/2);
+plane.scale.x= 120;
+plane.scale.y= 150;
+plane.scale.z= 150;
 scene.add(plane);
-let plane2 = createGroundPlaneWired(485, 600,40,40,"rgb(100,100,20)")
-plane2.translateY(600);
+plane.translateZ(-100);
+
+
+let plane2 = new Object3D();
+plane2.add(vale2);
+plane2.rotateX(-Math.PI/2);
+plane2.translateY(900);
+plane2.scale.x= 120;
+plane2.scale.y= 150;
+plane2.scale.z= 150;
 scene.add(plane2);
+plane2.translateZ(-100);
+
+const params = {
+  color: '#FFFFFF',
+  scale: 4,
+  flowX: 1,
+  flowY: 1
+};
 
 				// water
 
-				const waterGeometry = new THREE.PlaneGeometry( 20, 20 );
+				const waterGeometry = new THREE.PlaneGeometry( 400, 800 );
 
-				water = new Water( waterGeometry, {
+				var water = new Water( waterGeometry, {
 					color: params.color,
 					scale: params.scale,
 					flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
-					textureWidth: 1024,
-					textureHeight: 1024
+					textureWidth: 300,
+					textureHeight: 300
 				} );
 
 				water.position.y = 1;
@@ -348,17 +368,17 @@ function gameOver(){
 
 function movingPlanes()
 {
-  if(plane.position.z > 450) 
+  if(plane.position.z > 750) 
   {
-    plane.position.set(0,0,-750);
+    plane.position.set(0,-100,-1050);
   }
- plane.translateY(-GAME_SPEED);
+ plane.translateY(-GAME_SPEED*4);
 
- if(plane2.position.z > 450)
+ if(plane2.position.z > 750)
  {
-   plane2.position.set(0,0,-750);
+   plane2.position.set(0,-100,-1050);
  }
-plane2.translateY(-GAME_SPEED);
+plane2.translateY(-GAME_SPEED*4);
 }
 
 // controle do avião por teclado
@@ -402,6 +422,12 @@ function keyboardUpdate() {
   }
 }
 
+
+
+
+
+
+
 //Interface pra mapa de teclas
 let controls = new InfoBox();
   controls.add("Plane Shooter");
@@ -431,15 +457,17 @@ export function finishLevel(){
 
 function render()
 {
+  scroller.translateZ(GAME_SPEED);
   keyboardUpdate();
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
   if(!pause){
-    frameCounter ++;
     movingPlanes();
     moveEnemies();
     moveRecharges();
     if(!levelFinished){
+      // if(!shooting)
+      //   spawnProjectiles();
       Projectile.moveProjectiles(scene);
       Missile.moveMissiles(scene);
       checkCollisions();
