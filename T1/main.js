@@ -27,7 +27,7 @@ export var scroller = new Object3D();
 scene.add(scroller);
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
-orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc.
+orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc
 
 var godMode = false;
 var shooting = false;
@@ -35,6 +35,11 @@ var playerDead = false;
 var levelFinished;
 var pause = false;
 export const GAME_SPEED = 0.3;
+
+var explosionAudio = new Audio('assets/explosion.mp3');
+var bgm = new Audio('assets/bgm.mp3');
+bgm.loop = true;
+bgm.play();
 
 //iluminação
 
@@ -130,6 +135,7 @@ export function createEnemy
   enemy.position.set(x, y, z);
   scene.add(enemy);
   enemies.push(enemy);
+  return ("createEnemy(" + x + ", " + y + ", " + z + ", " + (isGrounded ? "launcher" : ("E" + type)) + ", " + isGrounded + ", " + direction + "),\n");
 }
 
 //vetor para guardar os inimigos criados e os inimigos que estão morrendo
@@ -192,7 +198,6 @@ document.addEventListener("visibilitychange", (event) => {
 });
 
 //criação e movimentação dos inimigos e recargas
-playLevel();
 
 render();
 
@@ -240,11 +245,12 @@ function checkCollisions(){
       if(!(Projectile.projectiles[i].isEnemy) && enemies[j].position.y > 60){
         if(intersectSphereBox(Projectile.projectiles[i].children[0], enemies[j])){
           enemies[j].isDead = true;
+          explosionAudio.play();
           dyingEnemies.push(enemies[j]);
           enemies.splice(j,1);
           scene.remove(Projectile.projectiles[i]);
-          Projectile.projectiles[i].geometry.dispose();
-          Projectile.projectiles[i].material.dispose();
+          Projectile.projectiles[i].children[0].geometry.dispose();
+          Projectile.projectiles[i].children[0].material.dispose();
           Projectile.projectiles.splice(i, 1);
         }
       }
@@ -253,6 +259,7 @@ function checkCollisions(){
     for(let i = 0; i<Missile.missiles.length; i++){
       if(enemies[j].position.y < 60){
         if(intersectBoxes(Missile.missiles[i], enemies[j])){
+          explosionAudio.play();
           dyingEnemies.push(enemies[j]);
           enemies[j].isDead = true;
           enemies.splice(j,1);
@@ -388,8 +395,9 @@ window.addEventListener('keydown', function(e) {
     launchMissile();
   if(e.key == 'g')
     godMode = !godMode;
-  if(e.key == 'p')
+  if(e.key == 'p'){
     pause = !pause;
+  }
   if(e.key == 'Control'){
     if(!shooting){
       shooting = true;
@@ -455,6 +463,31 @@ export function finishLevel(){
   levelFinished = true;
 }
 
+
+export function Timer(callback, delay) {
+  var args = arguments,
+      self = this,
+      timer, start;
+
+  this.clear = function () {
+      clearTimeout(timer);
+  };
+
+  this.pause = function () {
+      this.clear();
+      delay -= new Date() - start;
+  };
+
+  this.resume = function () {
+      start = new Date();
+      timer = setTimeout(function () {
+          callback.apply(self, Array.prototype.slice.call(args, 2, args.length));
+      }, delay);
+  };
+
+  this.resume();
+}
+
 function render()
 {
   scroller.translateZ(GAME_SPEED);
@@ -462,6 +495,8 @@ function render()
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
   if(!pause){
+    frameCounter ++;
+    playLevel(frameCounter);
     movingPlanes();
     moveEnemies();
     moveRecharges();
