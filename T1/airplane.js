@@ -14,7 +14,8 @@ export default class Airplane extends THREE.Object3D{
         this.children[0].scale.y = 2
         this.children[0].scale.z = 2
         this.damage = 0;
-
+        this.shooting = false;
+        this.shootingTimer = 0;
     }
 
     //movimentação
