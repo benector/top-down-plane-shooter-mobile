@@ -26,6 +26,7 @@ orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotati
 
 var godMode = false;
 var shooting = false;
+var launching = false;
 var playerDead = false;
 var levelFinished;
 var pause = false;
@@ -186,12 +187,19 @@ async function spawnProjectiles(){
 let missileGeometry = new THREE.CylinderGeometry(1.8, 1.8, 8, 32);
 let missileMaterial = new THREE.MeshLambertMaterial( {color: "white"} );
 
-function launchMissile(){
+async function launchMissile(){
   if(playerDead)
     return;
   let missile= new Missile(missileGeometry, missileMaterial);
   missile.position.set(airplane.position.x, airplane.position.y, airplane.position.z - 10);
   scene.add(missile);
+  if(!launching)
+  return;
+  await delay(500);
+  if(launching)
+    launchMissile();
+ 
+ 
 }
 
 //colisões
@@ -346,6 +354,73 @@ function movingPlanes()
 plane2.translateY(-GAME_SPEED);
 }
 
+//controle do avião porjoystick e botões
+
+
+//botões
+const shootButton = document.getElementById('shoot');
+shootButton.addEventListener('touchstart', (event) => {
+  if(!shooting){
+    shooting = true;
+    spawnProjectiles();
+  }
+});
+
+shootButton.addEventListener('touchend', (event) => {
+  console.log('touch end',event)
+  shooting = false;
+
+});
+
+const launchButton = document.getElementById('launch');
+launchButton.addEventListener('touchstart', ()=>{
+  if(!launching){
+    launching = true;
+    launchMissile();
+  }
+})
+
+launchButton.addEventListener('touchend', (event) => {
+  console.log('touch end',event)
+  launching = false;
+
+});
+
+
+//joysticks
+addJoysticks();
+
+function addJoysticks(){
+   
+    // Details in the link bellow:
+    // https://yoannmoi.net/nipplejs/
+  
+    let joystickL = nipplejs.create({
+      zone: document.getElementById('joystickWrapper1'),
+      mode: 'static',
+      position: { top: '-80px', left: '80px' }
+    });
+    
+    joystickL.on('move', function (evt, data) {
+      console.log('evt', evt);
+      console.log('data', data);
+  
+      const forward = data.vector.y
+      const turn = data.vector.x
+  
+      if (forward > 0) 
+        airplane.moveUp();
+      else if (forward < 0)
+      airplane.moveDown();
+  
+      if (turn > 0) 
+        airplane.moveRight()
+      else if (turn < 0)
+        airplane.moveLeft()
+    })
+  
+
+}  
 // controle do avião por teclado
 
 window.addEventListener('keydown', function(e) {
@@ -389,17 +464,17 @@ function keyboardUpdate() {
 }
 
 //Interface pra mapa de teclas
-let controls = new InfoBox();
-  controls.add("Plane Shooter");
-  controls.addParagraph();
-  controls.add("Mapa de teclas");
-  controls.add("* Setas movem o avião nas respectivas direções");
-  controls.add("* CTRL para atirar projéteis");
-  controls.add("* Espaço para lançar mísseis");
-  controls.add("* Tecla G para ativar modo de testes");
-  controls.add("* Tecla ENTER para reiniciar o jogo caso perca ou chegue no final");
+// let controls = new InfoBox();
+//   controls.add("Plane Shooter");
+//   controls.addParagraph();
+//   controls.add("Mapa de teclas");
+//   controls.add("* Setas movem o avião nas respectivas direções");
+//   controls.add("* CTRL para atirar projéteis");
+//   controls.add("* Espaço para lançar mísseis");
+//   controls.add("* Tecla G para ativar modo de testes");
+//   controls.add("* Tecla ENTER para reiniciar o jogo caso perca ou chegue no final");
 
-  controls.show();
+//   controls.show();
 
 //Interface de danos
 const damageControl = new damageInfo();
@@ -447,16 +522,16 @@ function render()
   renderer.render(scene, camera) // Render scene
   if(!pause){
     frameCounter ++;
-    playLevel(frameCounter);
+    //playLevel(frameCounter);
     movingPlanes();
-    moveEnemies();
-    moveRecharges();
+    //moveEnemies();
+    //moveRecharges();
     if(!levelFinished){
       Projectile.moveProjectiles(scene);
       Missile.moveMissiles(scene);
-      checkCollisions();
-      removeEnemies();
-      checkPlaneDamage();
+      //checkCollisions();
+      //removeEnemies();
+      //checkPlaneDamage();
     }
     if(playerDead){
       gameOver();

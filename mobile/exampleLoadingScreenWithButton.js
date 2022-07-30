@@ -34,6 +34,8 @@ const loadingManager = new THREE.LoadingManager( () => {
   let button  = document.getElementById("myBtn")
   button.style.backgroundColor = '#8f8eff';
   button.innerHTML = 'Iniciar';
+  button.addEventListener("click", onButtonPressed);
+
 
 });
 

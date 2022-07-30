@@ -2,29 +2,18 @@ export class damageInfo {
     constructor() {
         //info box
       this.infoBox = document.createElement('div');
-      this.infoBox.id = "InfoxBox";
-      this.infoBox.display = "none";
-      this.infoBox.style.padding = "6px 14px";
-      this.infoBox.style.position = "fixed";
-      this.infoBox.style.top = "0";
-      this.infoBox.style.left= "0";
-      this.infoBox.style.backgroundColor = "rgba(255,255,255,0.2)";
-      this.infoBox.style.color = "white";
-      this.infoBox.style.fontFamily = "sans-serif";
-      this.infoBox.style.userSelect = "none";
-      this.infoBox.style.textAlign = "left";
-
+      this.infoBox.id = "info-box";
       this.infoBox.appendChild( document.createTextNode("Controle de danos do avião"));
       this.infoBox.appendChild(document.createElement("br"));
       this.infoBox.appendChild(document.createElement("br")); 
       
       //barra de danos
       this.damageBar = document.createElement('div');
-      this.damageBar.style.width = "200px";
       this.damageBar.style.height = "20px";
-      this.damageBar.style.border = "solid 1px black"
       this.damageBar.style.display= "flex";
-      this.damageBar.style.flexDirection="row"
+      this.damageBar.style.justifyContent = "center";
+      this.damageBar.style.flexDirection="row";
+      this.damageBar.style.borderRadius = "8px";
       this.infoBox.appendChild(this.damageBar);  
 
       //contador de dados
@@ -35,10 +24,9 @@ export class damageInfo {
 
     newDamageBar(){
         this.damageBar = document.createElement('div');
-        this.damageBar.style.width = "200px";
         this.damageBar.style.height = "20px";
-        this.damageBar.style.border = "solid 1px black"
         this.damageBar.style.display= "flex";
+        this.damageBar.style.justifyContent = "center";
         this.damageBar.style.flexDirection="row"
         this.infoBox.appendChild(this.damageBar);  
     }
@@ -95,7 +83,9 @@ export class damageInfo {
     }
 
     show() {
-        document.body.appendChild(this.infoBox);
+        let container  = document.getElementById('damage-control');
+        container.appendChild(this.infoBox);
+        document.body.appendChild(container);
     }
     
     delay(time) {
