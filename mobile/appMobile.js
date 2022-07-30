@@ -1,10 +1,11 @@
 import * as THREE from  'three';
-import KeyboardState from '../../libs/util/KeyboardState.js';
+import KeyboardState from '../libs/util/KeyboardState.js';
 
 import {initRenderer, 
         initCamera,
         onWindowResize, 
-      createGroundPlaneWired} from "../../libs/util/util.js";
+        InfoBox,
+      createGroundPlaneWired} from "../libs/util/util.js";
 import Airplane from './airplane.js';
 import Enemy from './enemy.js';
 import Projectile from './projectile.js';
@@ -13,20 +14,27 @@ import playLevel from './level.js';
 import Missile from './missile.js';
 import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
-import { DirectionalLight, Vector3 } from '../../build/three.module.js';
-import { InfoBox } from './infobox.js';
+import { DirectionalLight, Vector3 } from '../build/three.module.js';
+import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
 
-export var scene;
+var frameCounter = 0;
+export const scene = new THREE.Scene();    // Create main scene;
 let renderer, camera, orbit; // Initial variables
-scene = new THREE.Scene();    // Create main scene
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
+orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc
 
 var godMode = false;
 var shooting = false;
 var playerDead = false;
 var levelFinished;
-export const GAME_SPEED = 0.8;
+var pause = false;
+export const GAME_SPEED = 0.3;
+
+var explosionAudio = new Audio('assets/explosion.mp3');
+var bgm = new Audio('assets/bgm.mp3');
+bgm.loop = true;
+bgm.play();
 
 //iluminação
 
@@ -55,6 +63,7 @@ window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)},
 // To use the keyboard
 var keyboard = new KeyboardState();
 
+
 // create the 2 ground planes
 let plane = createGroundPlaneWired(485, 600,40,40)
 scene.add(plane);
@@ -62,12 +71,9 @@ let plane2 = createGroundPlaneWired(485, 600,40,40,"rgb(100,100,20)")
 plane2.translateY(600);
 scene.add(plane2);
 
-
 // criação do avião
 var airplane = new Airplane();
 scene.add(airplane);
-
-addJoysticks();
 
 export default function getPlayerPosition(){
   return airplane.position;
@@ -87,6 +93,7 @@ export function createEnemy
   enemy.position.set(x, y, z);
   scene.add(enemy);
   enemies.push(enemy);
+  return ("createEnemy(" + x + ", " + y + ", " + z + ", " + (isGrounded ? "launcher" : ("E" + type)) + ", " + isGrounded + ", " + direction + "),\n");
 }
 
 //vetor para guardar os inimigos criados e os inimigos que estão morrendo
@@ -140,16 +147,15 @@ let windowOnFocus = true
 
 //verifica se janela está aberta
 
-// document.addEventListener("visibilitychange", (event) => {
-//   if (document.visibilityState !== "visible") {
-//     windowOnFocus = false
-//   } else {
-//    windowOnFocus = true
-//   }
-// });
+document.addEventListener("visibilitychange", (event) => {
+  if (document.visibilityState !== "visible") {
+    windowOnFocus = false
+  } else {
+   windowOnFocus = true
+  }
+});
 
 //criação e movimentação dos inimigos e recargas
-//playLevel();
 
 render();
 
@@ -163,17 +169,16 @@ let projectileGeometry = new THREE.SphereGeometry(1.5);
 let projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 
 async function spawnProjectiles(){
-  keyboard.update();
-  while(keyboard.pressed("ctrl")){
-    if(playerDead)
-      break;
-    shooting = true;
-    let projectile = new Projectile(projectileGeometry, projectileMaterial);
-    projectile.position.set(airplane.position.x, airplane.position.y, airplane.position.z - 10);
-    scene.add(projectile);
-    await delay(500);
-  }
-  shooting = false;
+  if(playerDead)
+    return;
+  let projectile = new Projectile(projectileGeometry, projectileMaterial);
+  projectile.position.set(airplane.position.x, airplane.position.y, airplane.position.z - 10);
+  scene.add(projectile);
+  if(!shooting)
+    return;
+  await delay(500);
+  if(shooting)
+    spawnProjectiles();
 }
 
 //lançamento de misseis
@@ -189,15 +194,6 @@ function launchMissile(){
   scene.add(missile);
 }
 
-//modo de testes
-
-window.addEventListener('keydown', function(e) {
-  if(e.key == ' ')
-    launchMissile();
-  if(e.key == 'g')
-    godMode = !godMode;
-});
-
 //colisões
 
 function checkCollisions(){
@@ -205,13 +201,14 @@ function checkCollisions(){
     //colidir inimigos aéreos com projéteis
     for(let i = 0; i<Projectile.projectiles.length; i++){
       if(!(Projectile.projectiles[i].isEnemy) && enemies[j].position.y > 60){
-        if(intersectSphereBox(Projectile.projectiles[i], enemies[j])){
+        if(intersectSphereBox(Projectile.projectiles[i].children[0], enemies[j])){
           enemies[j].isDead = true;
+          explosionAudio.play();
           dyingEnemies.push(enemies[j]);
           enemies.splice(j,1);
           scene.remove(Projectile.projectiles[i]);
-          Projectile.projectiles[i].geometry.dispose();
-          Projectile.projectiles[i].material.dispose();
+          Projectile.projectiles[i].children[0].geometry.dispose();
+          Projectile.projectiles[i].children[0].material.dispose();
           Projectile.projectiles.splice(i, 1);
         }
       }
@@ -220,6 +217,7 @@ function checkCollisions(){
     for(let i = 0; i<Missile.missiles.length; i++){
       if(enemies[j].position.y < 60){
         if(intersectBoxes(Missile.missiles[i], enemies[j])){
+          explosionAudio.play();
           dyingEnemies.push(enemies[j]);
           enemies[j].isDead = true;
           enemies.splice(j,1);
@@ -245,13 +243,13 @@ function checkCollisions(){
   //colidir projéteis do inimigo com jogador
   for(let i = 0; i<Projectile.projectiles.length; i++){
     if(Projectile.projectiles[i].isEnemy){
-      if(intersectSphereBox(Projectile.projectiles[i], airplane.children[0])){
+      if(intersectSphereBox(Projectile.projectiles[i].children[0], airplane.children[0])){
         if(!godMode)
           airplane.hit(1);
         updateDamageView();
         scene.remove(Projectile.projectiles[i]);
-        Projectile.projectiles[i].geometry.dispose();
-        Projectile.projectiles[i].material.dispose();
+        Projectile.projectiles[i].children[0].geometry.dispose();
+        Projectile.projectiles[i].children[0].material.dispose();
         Projectile.projectiles.splice(i, 1);
       } 
     }
@@ -301,8 +299,8 @@ function gameOver(){
 
     Projectile.projectiles.forEach(projectile => {
       scene.remove(projectile);
-      projectile.geometry.dispose();
-      projectile.material.dispose();
+      projectile.children[0].geometry.dispose();
+      projectile.children[0].material.dispose();
     });
     Projectile.projectiles = [];
 
@@ -348,78 +346,53 @@ function movingPlanes()
 plane2.translateY(-GAME_SPEED);
 }
 
-//controle do avião porjoystick
-
-function addJoysticks(){
-   
-  // Details in the link bellow:
-  // https://yoannmoi.net/nipplejs/
-
-  let joystickL = nipplejs.create({
-    zone: document.getElementById('joystickWrapper1'),
-    mode: 'static',
-    position: { top: '-80px', left: '80px' }
-  });
-  
-  joystickL.on('move', function (evt, data) {
-    const forward = data.vector.y
-    const turn = data.vector.x
-
-    if (forward > 0) 
-      airplane.moveUp();
-    else if (forward < 0)
-    airplane.moveDown();
-
-    if (turn > 0) 
-      airplane.moveRight()
-    else if (turn < 0)
-      airplane.moveLeft()
-  })
-
-  joystickL.on('end', function (evt) {
-    bkdValue = 0
-    fwdValue = 0
-    lftValue = 0
-    rgtValue = 0
-  })
-
-  let joystickR = nipplejs.create({
-    zone: document.getElementById('joystickWrapper2'),
-    mode: 'static',
-    lockY: true, // only move on the Y axis
-    position: { top: '-80px', right: '80px' },
-  });
-
-  joystickR.on('move', function (evt, data) {
-    const move = data.vector.y;
-    console.log(move)
-
-  if(move>0)
-    spawnProjectiles();
-  else
-    launchMissile();
-
-
-    previousScale = changeScale;
-  })
-}
 // controle do avião por teclado
+
+window.addEventListener('keydown', function(e) {
+  if(e.key == ' ')
+    launchMissile();
+  if(e.key == 'g')
+    godMode = !godMode;
+  if(e.key == 'p'){
+    pause = !pause;
+  }
+  if(e.key == 'Control'){
+    if(!shooting){
+      shooting = true;
+      spawnProjectiles();
+    }
+  }
+});
+
+window.addEventListener('keyup', function(e) {
+  if(e.key == 'Control'){
+    shooting = false;
+  }
+});
 
 function keyboardUpdate() {
   
   keyboard.update();
- if ( keyboard.pressed("left") && !playerDead && !levelFinished )     airplane.moveLeft();
- if ( keyboard.pressed("right") && !playerDead && !levelFinished )    airplane.moveRight();
- if ( keyboard.pressed("up") && !playerDead && !levelFinished )       airplane.moveUp();
- if ( keyboard.pressed("down") && !playerDead && !levelFinished )      airplane.moveDown();
- if ( keyboard.pressed("enter") && (levelFinished || playerDead) )      window.location.reload();;
-
+  if ( keyboard.pressed("left") && !playerDead && !levelFinished )     airplane.moveLeft();
+  if ( keyboard.pressed("right") && !playerDead && !levelFinished )    airplane.moveRight();
+  if ( keyboard.pressed("up") && !playerDead && !levelFinished )       airplane.moveUp();
+  if ( keyboard.pressed("down") && !playerDead && !levelFinished )     airplane.moveDown();
+  if ( keyboard.pressed("enter") && (levelFinished || playerDead) )    window.location.reload();                                     
+  if (!keyboard.pressed("left") && !keyboard.pressed("right")){
+    if(airplane.children[0].rotation.z % Math.PI > 0){
+      airplane.children[0].rotateZ(0.1);
+    }
+    if(airplane.children[0].rotation.z % Math.PI < 0){
+      airplane.children[0].rotateZ(-0.1);
+    }
+  }
 }
 
 //Interface pra mapa de teclas
 let controls = new InfoBox();
-  controls.add("Como jogar");
+  controls.add("Plane Shooter");
   controls.addParagraph();
+  controls.add("Mapa de teclas");
   controls.add("* Setas movem o avião nas respectivas direções");
   controls.add("* CTRL para atirar projéteis");
   controls.add("* Espaço para lançar mísseis");
@@ -442,25 +415,51 @@ export function finishLevel(){
   levelFinished = true;
 }
 
+
+export function Timer(callback, delay) {
+  var args = arguments,
+      self = this,
+      timer, start;
+
+  this.clear = function () {
+      clearTimeout(timer);
+  };
+
+  this.pause = function () {
+      this.clear();
+      delay -= new Date() - start;
+  };
+
+  this.resume = function () {
+      start = new Date();
+      timer = setTimeout(function () {
+          callback.apply(self, Array.prototype.slice.call(args, 2, args.length));
+      }, delay);
+  };
+
+  this.resume();
+}
+
 function render()
 {
- // movingPlanes();
   keyboardUpdate();
- // moveEnemies();
- // moveRecharges();
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
-  if(!levelFinished){
-    if(!shooting)
-      spawnProjectiles();
-    Projectile.moveProjectiles(scene);
-    Missile.moveMissiles(scene);
-    checkCollisions();
-    removeEnemies();
-    checkPlaneDamage();
+  if(!pause){
+    frameCounter ++;
+    playLevel(frameCounter);
+    movingPlanes();
+    moveEnemies();
+    moveRecharges();
+    if(!levelFinished){
+      Projectile.moveProjectiles(scene);
+      Missile.moveMissiles(scene);
+      checkCollisions();
+      removeEnemies();
+      checkPlaneDamage();
+    }
+    if(playerDead){
+      gameOver();
+    }
   }
-  if(playerDead){
-    gameOver();
-  }
-
 }

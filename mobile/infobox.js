@@ -3,7 +3,7 @@ export class InfoBox {
       this.infoBox = document.createElement('div');
       this.infoBox.id = "InfoxBox";
       var header = 
-      this.infoBox.style.minWidth = "200px";
+      this.infoBox.style.minWidth = "100px";
       this.infoBox.style.padding = "6px 14px";
       this.infoBox.style.position = "fixed";
       this.infoBox.style.top = "0";

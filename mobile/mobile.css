@@ -1,0 +1,19 @@
+body{
+    font-family: 'Quicksand', sans-serif !important;
+
+}
+
+#controls{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-right: 25px;
+    margin-bottom: 50px;
+}
+
+#controls button{
+    font-size: 24px;
+    margin: 10px;
+
+}

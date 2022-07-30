@@ -3,6 +3,7 @@ export class damageInfo {
         //info box
       this.infoBox = document.createElement('div');
       this.infoBox.id = "InfoxBox";
+      this.infoBox.display = "none";
       this.infoBox.style.padding = "6px 14px";
       this.infoBox.style.position = "fixed";
       this.infoBox.style.top = "0";
