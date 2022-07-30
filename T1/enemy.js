@@ -28,6 +28,7 @@ export default class Enemy extends THREE.Object3D{
         this.isGrounded = isGrounded;
         this.isDead = false;
         this.canShoot = true;
+        this.shootingTimer = 70;
     }
 
     canMove(){
@@ -74,11 +75,10 @@ export default class Enemy extends THREE.Object3D{
         }
     }
 
-    async shoot(){
-        await this.delay(1500);
+    shoot(){
+        console.log(this.shootingTimer);
         if(!this.canShoot || this.isDead)
             return;
-        this.canShoot = false;
         let projectileGeometry = this.isGrounded ? new THREE.CylinderGeometry(0.1, 1.8, 8, 32) : new THREE.SphereGeometry(2.8);
         let projectile = new Projectile(projectileGeometry,
                             new THREE.MeshLambertMaterial( {color: "rgb(255, 150, 60)"} ),
@@ -107,8 +107,7 @@ export default class Enemy extends THREE.Object3D{
             projectile.lookAt(playerPosition);
         }
         scene.add(projectile);
-        await this.delay(this.type == 'B' ? 3500 : 5500);
-        this.canShoot = true;
+        this.shootingTimer = 0;
     }
 
     delay(time) {

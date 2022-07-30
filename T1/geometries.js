@@ -161,3 +161,8 @@ launcher.scale.z = 0.01
 
 export let vale = new Object3D;
 loadGLTFFile("vale", true, 1, vale);
+vale.rotateX(degreesToRadians(90));
+
+export let vale2 = new Object3D;
+loadGLTFFile("vale", true, 1, vale2);
+vale2.rotateX(degreesToRadians(90));

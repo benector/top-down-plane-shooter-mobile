@@ -5,7 +5,8 @@ import {initRenderer,
         initCamera,
         onWindowResize, 
         InfoBox,
-      createGroundPlaneWired} from "../libs/util/util.js";
+      createGroundPlaneWired,
+      degreesToRadians} from "../libs/util/util.js";
 import Airplane from './airplane.js';
 import Enemy from './enemy.js';
 import Projectile from './projectile.js';
@@ -14,12 +15,16 @@ import playLevel from './level.js';
 import Missile from './missile.js';
 import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
-import { DirectionalLight, Vector3 } from '../build/three.module.js';
+import { DirectionalLight, Object3D, Plane, Vector3 } from '../build/three.module.js';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
+import { loadGLTFFile, vale, vale2 } from './geometries.js';
+import { Water } from '../build/jsm/objects/Water2.js';
 
-var frameCounter = 0;
-export const scene = new THREE.Scene();    // Create main scene;
+export var scene;
 let renderer, camera, orbit; // Initial variables
+scene = new THREE.Scene();    // Create main scene
+export var scroller = new Object3D();
+scene.add(scroller);
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
 orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc
@@ -30,6 +35,7 @@ var launching = false;
 var playerDead = false;
 var levelFinished;
 var pause = false;
+let frameCounter = 0;
 export const GAME_SPEED = 0.3;
 
 var explosionAudio = new Audio('assets/explosion.mp3');
@@ -66,11 +72,48 @@ var keyboard = new KeyboardState();
 
 
 // create the 2 ground planes
-let plane = createGroundPlaneWired(485, 600,40,40)
+let plane = new Object3D();
+plane.add(vale);
+plane.rotateX(-Math.PI/2);
+plane.scale.x= 120;
+plane.scale.y= 150;
+plane.scale.z= 150;
 scene.add(plane);
-let plane2 = createGroundPlaneWired(485, 600,40,40,"rgb(100,100,20)")
-plane2.translateY(600);
+plane.translateZ(-100);
+
+
+let plane2 = new Object3D();
+plane2.add(vale2);
+plane2.rotateX(-Math.PI/2);
+plane2.translateY(900);
+plane2.scale.x= 120;
+plane2.scale.y= 150;
+plane2.scale.z= 150;
 scene.add(plane2);
+plane2.translateZ(-100);
+
+const params = {
+  color: '#FFFFFF',
+  scale: 4,
+  flowX: 1,
+  flowY: 1
+};
+
+// water
+
+const waterGeometry = new THREE.PlaneGeometry( 400, 800 );
+
+var water = new Water( waterGeometry, {
+  color: params.color,
+  scale: params.scale,
+  flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+  textureWidth: 240,
+  textureHeight: 240
+} );
+
+water.position.y = 1;
+water.rotation.x = Math.PI * - 0.5;
+scene.add( water );
 
 // criação do avião
 var airplane = new Airplane();
@@ -107,7 +150,11 @@ function moveEnemies(){
   {
     if(enemies[i].canMove()){
       enemies[i].move();
-      enemies[i].shoot();
+      if(enemies[i].shootingTimer == 170){
+        enemies[i].shoot();
+      } else {
+        enemies[i].shootingTimer++;
+      }
     }
     else{
       //remove um inimigo do vetor e também da cena quando atingir os limites do plano
@@ -162,24 +209,15 @@ render();
 
 // disparo de projéteis
 
-function delay(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
-}
-
 let projectileGeometry = new THREE.SphereGeometry(1.5);
 let projectileMaterial = new THREE.MeshLambertMaterial( {color: "rgb(255, 255, 0)"} );
 
-async function spawnProjectiles(){
+async function shoot(){
   if(playerDead)
     return;
   let projectile = new Projectile(projectileGeometry, projectileMaterial);
   projectile.position.set(airplane.position.x, airplane.position.y, airplane.position.z - 10);
   scene.add(projectile);
-  if(!shooting)
-    return;
-  await delay(500);
-  if(shooting)
-    spawnProjectiles();
 }
 
 //lançamento de misseis
@@ -341,15 +379,15 @@ function gameOver(){
 
 function movingPlanes()
 {
-  if(plane.position.z > 450) 
+  if(plane.position.z > 750) 
   {
-    plane.position.set(0,0,-750);
+    plane.position.set(0,-100,-1050);
   }
  plane.translateY(-GAME_SPEED);
 
- if(plane2.position.z > 450)
+ if(plane2.position.z > 750)
  {
-   plane2.position.set(0,0,-750);
+   plane2.position.set(0,-100,-1050);
  }
 plane2.translateY(-GAME_SPEED);
 }
@@ -432,16 +470,17 @@ window.addEventListener('keydown', function(e) {
     pause = !pause;
   }
   if(e.key == 'Control'){
-    if(!shooting){
-      shooting = true;
-      spawnProjectiles();
+    if(!airplane.shooting){
+      airplane.shooting = true;
+      airplane.shootingTimer = 0;
+      shoot();
     }
   }
 });
 
 window.addEventListener('keyup', function(e) {
   if(e.key == 'Control'){
-    shooting = false;
+    airplane.shooting = false;
   }
 });
 
@@ -517,6 +556,7 @@ export function Timer(callback, delay) {
 
 function render()
 {
+  scroller.translateZ(GAME_SPEED);
   keyboardUpdate();
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
@@ -527,6 +567,15 @@ function render()
     //moveEnemies();
     //moveRecharges();
     if(!levelFinished){
+      if(airplane.shooting){
+        airplane.shootingTimer++;
+        if(airplane.shootingTimer == 30){
+          shoot();
+          airplane.shootingTimer = 0;
+        }
+
+      }
+
       Projectile.moveProjectiles(scene);
       Missile.moveMissiles(scene);
       //checkCollisions();
