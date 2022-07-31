@@ -1,11 +1,11 @@
 import * as THREE from  'three';
-import {GLTFLoader} from '../../build/jsm/loaders/GLTFLoader.js';
-import {OBJLoader} from '../../build/jsm/loaders/OBJLoader.js';
-import {MTLLoader} from '../../build/jsm/loaders/MTLLoader.js';
-import {getMaxSize, degreesToRadians} from "../../libs/util/util.js";
-import { Object3D } from '../../build/three.module.js';
-import { CSG } from '../../libs/other/CSGMesh.js' 
-import { Water } from '../../build/jsm/objects/Water.js';  // Water shader in here
+import {GLTFLoader} from './build/jsm/loaders/GLTFLoader.js';
+import {OBJLoader} from './build/jsm/loaders/OBJLoader.js';
+import {MTLLoader} from './build/jsm/loaders/MTLLoader.js';
+import {getMaxSize, degreesToRadians} from "./libs/util/util.js";
+import { Object3D } from './build/three.module.js';
+import { CSG } from './libs/other/CSGMesh.js' 
+import { Water } from './build/jsm/objects/Water.js';  // Water shader in here
 import { onStartButtonPressed } from './appMobile.js';
 
 // Create the loading manager

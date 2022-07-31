@@ -1,12 +1,12 @@
 import * as THREE from  'three';
-import KeyboardState from '../../libs/util/KeyboardState.js';
+import KeyboardState from './libs/util/KeyboardState.js';
 
 import {initRenderer, 
         initCamera,
         onWindowResize, 
         InfoBox,
       createGroundPlaneWired,
-      degreesToRadians} from "../../libs/util/util.js";
+      degreesToRadians} from "./libs/util/util.js";
 import Airplane from './airplane.js';
 import Enemy from './enemy.js';
 import Projectile from './projectile.js';
@@ -15,10 +15,10 @@ import playLevel from './level.js';
 import Missile from './missile.js';
 import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
-import { DirectionalLight, Object3D, Plane, Vector3 } from '../../build/three.module.js';
-import { OrbitControls } from '../../build/jsm/controls/OrbitControls.js';
+import { DirectionalLight, Object3D, Plane, Vector3 } from './build/three.module.js';
+import { OrbitControls } from './build/jsm/controls/OrbitControls.js';
 import { loadGLTFFile, vale, vale2 } from './geometries.js';
-import { Water } from '../../build/jsm/objects/Water2.js';
+import { Water } from './build/jsm/objects/Water2.js';
 
 export var scene;
 let renderer, camera, orbit; // Initial variables
@@ -219,7 +219,6 @@ function delay(time) {
 }
 
 async function launchMissile(){
-    console.log('launchmissile')
     if(playerDead)
       return;
     let missile= new Missile(missileGeometry, missileMaterial);
@@ -403,14 +402,12 @@ shootButton.addEventListener('touchstart', (event) => {
 });
 
 shootButton.addEventListener('touchend', (event) => {
-  console.log('touch end',event)
   airplane.shooting = false;
 
 });
 
 const launchButton = document.getElementById('launch');
 launchButton.addEventListener('touchstart', (event)=>{
-  console.log('touch start',event)
 
   if(!launching){
     launching = true;
@@ -419,7 +416,6 @@ launchButton.addEventListener('touchstart', (event)=>{
 })
 
 launchButton.addEventListener('touchend', (event) => {
-  console.log('touch end',event)
   launching = false;
 
 });

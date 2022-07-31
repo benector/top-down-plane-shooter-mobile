@@ -1,5 +1,5 @@
 import * as THREE from  'three';
-import { radiansToDegrees } from '../../libs/util/util.js';
+import { radiansToDegrees } from './libs/util/util.js';
 import getPlayerPosition, { GAME_SPEED, scene } from './appMobile.js';
 import Projectile from './projectile.js';
 

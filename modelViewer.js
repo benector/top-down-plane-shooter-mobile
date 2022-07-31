@@ -1,18 +1,18 @@
 import * as THREE from  'three';
-import Stats from '../../build/jsm/libs/stats.module.js';
-import GUI from '../../libs/util/dat.gui.module.js'
-import {TrackballControls} from '../../build/jsm/controls/TrackballControls.js';
-import {GLTFLoader} from '../../build/jsm/loaders/GLTFLoader.js';
-import {OBJLoader} from '../../build/jsm/loaders/OBJLoader.js';
-import {PLYLoader} from '../../build/jsm/loaders/PLYLoader.js';
-import {MTLLoader} from '../../build/jsm/loaders/MTLLoader.js';
+import Stats from './build/jsm/libs/stats.module.js';
+import GUI from './libs/util/dat.gui.module.js'
+import {TrackballControls} from './build/jsm/controls/TrackballControls.js';
+import {GLTFLoader} from './build/jsm/loaders/GLTFLoader.js';
+import {OBJLoader} from './build/jsm/loaders/OBJLoader.js';
+import {PLYLoader} from './build/jsm/loaders/PLYLoader.js';
+import {MTLLoader} from './build/jsm/loaders/MTLLoader.js';
 import {initRenderer, 
         SecondaryBox,
         initDefaultBasicLight,
         createGroundPlane,
         onWindowResize, 
         getMaxSize,
-        degreesToRadians} from "../../libs/util/util.js";
+        degreesToRadians} from "./libs/util/util.js";
 
 var scene = new THREE.Scene();    // Create main scene
 var stats = new Stats();          // To show FPS information

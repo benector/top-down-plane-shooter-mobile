@@ -1,5 +1,5 @@
 import * as THREE from  'three';
-import { Box3, Sphere } from '../../build/three.module.js';
+import { Box3, Sphere } from './build/three.module.js';
 
 // verificar interseção entre esfera e caixa
 
