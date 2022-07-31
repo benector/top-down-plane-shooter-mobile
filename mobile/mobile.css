@@ -1,0 +1,59 @@
+body{
+    font-family: 'Quicksand', sans-serif !important;
+}
+
+#controls{   
+    position: absolute;       
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+}
+
+#controls button{
+    font-size: 24px;
+    margin: 10px;
+    user-select: none;
+    touch-action: manipulation;
+    font-family: 'Quicksand', sans-serif !important;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+#damage-control{
+    top: 0;
+    display: flex;
+    justify-content: center;
+
+}
+
+#info-box{
+    padding: 6px 14px;
+    position: fixed;
+    top: 0px;
+    max-width: 300px;
+    background-color: rgba(53, 52, 52, 0.575);
+    color: white;
+    user-select: none;
+    text-align: center;
+    border-radius: 10px;
+}
+
+
+
+#game-over-box{
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    margin-top: 40vh;
+    width: 50%;
+    background-color: rgba(53, 52, 52, 0.575);
+    color: white;
+    user-select: none;
+    text-align: center;
+    border-radius: 10px;
+}
+
