@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./mobile.css">
+    <link rel="stylesheet" href="./loadingScreen.css">
 
     <meta name="viewport" content="width=device-width">  
     
@@ -43,16 +44,27 @@
     {"imports": {"three": "../../build/three.module.js"}} 
   </script>  
 
-  <!-- <section id="loading-screen">
-    <div id="loader"></div> 
+  <section id="loading-screen">
+    
+    <div class="title">
+      <h1>TOP DOWN PLANE SHOOTER</h1>
+    </div>  
+    <b  style="color:white">INSTRUÇÕES</b>
+    <div id="infoBox">
+      <p>- Movimente o joystick para mover o avião</p>
+      <p>- Clique no botão <i>SHOOT</i> para atirar projéteis</p>
+      <p>- Clique no botão <i>LAUNCH</i> para lançar mísseis</p>
+    </div>
     <button class="button" id="myBtn">Loading...</button>
+    <div id="loader"></div> 
+    <footer>Por Beatriz, Félix e Igor</footer>
   </section>
-   -->
+  
   <div id="joystickWrapper1"></div>
   
   <div id="controls">
-    <button id="shoot">SHOOT</button>
-    <button id="launch">LAUNCH</button>
+    <button type="button" id="shoot">SHOOT</button>
+    <button type="button"  id="launch">LAUNCH</button>
   </div> 
   <div id="damage-control">
     

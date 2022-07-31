@@ -5,7 +5,8 @@ import {initRenderer,
         initCamera,
         onWindowResize, 
         InfoBox,
-      createGroundPlaneWired} from "../libs/util/util.js";
+      createGroundPlaneWired,
+      degreesToRadians} from "../libs/util/util.js";
 import Airplane from './airplane.js';
 import Enemy from './enemy.js';
 import Projectile from './projectile.js';
@@ -14,19 +15,22 @@ import playLevel from './level.js';
 import Missile from './missile.js';
 import Recharge from './recharge.js';
 import { damageInfo } from './damageView.js';
-import { DirectionalLight, Vector3 } from '../build/three.module.js';
+import { DirectionalLight, Object3D, Plane, Vector3 } from '../build/three.module.js';
 import { OrbitControls } from '../build/jsm/controls/OrbitControls.js';
+import { loadGLTFFile, vale, vale2 } from './geometries.js';
+import { Water } from '../build/jsm/objects/Water2.js';
 
-var frameCounter = 0;
-export const scene = new THREE.Scene();    // Create main scene;
+export var scene;
 let renderer, camera, orbit; // Initial variables
+scene = new THREE.Scene();    // Create main scene
+export var scroller = new Object3D();
+scene.add(scroller);
 renderer = initRenderer();    // Init a basic renderer
 camera = initCamera(new THREE.Vector3(0, 300, 200)); // Init camera in this position
 orbit = new OrbitControls( camera, renderer.domElement ); // Enable mouse rotation, pan, zoom etc
 
 var godMode = false;
 var shooting = false;
-var launching = false;
 var playerDead = false;
 var levelFinished;
 var pause = false;
@@ -66,11 +70,48 @@ var keyboard = new KeyboardState();
 
 
 // create the 2 ground planes
-let plane = createGroundPlaneWired(485, 600,40,40)
+let plane = new Object3D();
+plane.add(vale);
+plane.rotateX(-Math.PI/2);
+plane.scale.x= 120;
+plane.scale.y= 150;
+plane.scale.z= 150;
 scene.add(plane);
-let plane2 = createGroundPlaneWired(485, 600,40,40,"rgb(100,100,20)")
-plane2.translateY(600);
+plane.translateZ(-100);
+
+
+let plane2 = new Object3D();
+plane2.add(vale2);
+plane2.rotateX(-Math.PI/2);
+plane2.translateY(900);
+plane2.scale.x= 120;
+plane2.scale.y= 150;
+plane2.scale.z= 150;
 scene.add(plane2);
+plane2.translateZ(-100);
+
+const params = {
+  color: '#FFFFFF',
+  scale: 4,
+  flowX: 1,
+  flowY: 1
+};
+
+				// water
+
+				const waterGeometry = new THREE.PlaneGeometry( 400, 800 );
+
+				var water = new Water( waterGeometry, {
+					color: params.color,
+					scale: params.scale,
+					flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+					textureWidth: 300,
+					textureHeight: 300
+				} );
+
+				water.position.y = 1;
+				water.rotation.x = Math.PI * - 0.5;
+				scene.add( water );
 
 // criação do avião
 var airplane = new Airplane();
@@ -187,19 +228,12 @@ async function spawnProjectiles(){
 let missileGeometry = new THREE.CylinderGeometry(1.8, 1.8, 8, 32);
 let missileMaterial = new THREE.MeshLambertMaterial( {color: "white"} );
 
-async function launchMissile(){
+function launchMissile(){
   if(playerDead)
     return;
   let missile= new Missile(missileGeometry, missileMaterial);
   missile.position.set(airplane.position.x, airplane.position.y, airplane.position.z - 10);
   scene.add(missile);
-  if(!launching)
-  return;
-  await delay(500);
-  if(launching)
-    launchMissile();
- 
- 
 }
 
 //colisões
@@ -341,82 +375,19 @@ function gameOver(){
 
 function movingPlanes()
 {
-  if(plane.position.z > 450) 
+  if(plane.position.z > 750) 
   {
-    plane.position.set(0,0,-750);
+    plane.position.set(0,-100,-1050);
   }
- plane.translateY(-GAME_SPEED);
+ plane.translateY(-GAME_SPEED*4);
 
- if(plane2.position.z > 450)
+ if(plane2.position.z > 750)
  {
-   plane2.position.set(0,0,-750);
+   plane2.position.set(0,-100,-1050);
  }
-plane2.translateY(-GAME_SPEED);
+plane2.translateY(-GAME_SPEED*4);
 }
 
-//controle do avião porjoystick e botões
-
-//botões
-const shootButton = document.getElementById('shoot');
-shootButton.addEventListener('touchstart', (event) => {
-  if(!shooting){
-    shooting = true;
-    spawnProjectiles();
-  }
-});
-
-shootButton.addEventListener('touchend', (event) => {
-  console.log('touch end',event)
-  shooting = false;
-
-});
-
-const launchButton = document.getElementById('launch');
-launchButton.addEventListener('touchstart', ()=>{
-  if(!launching){
-    launching = true;
-    launchMissile();
-  }
-})
-
-launchButton.addEventListener('touchend', (event) => {
-  console.log('touch end',event)
-  launching = false;
-
-});
-
-
-//joysticks
-addJoysticks();
-
-function addJoysticks(){
-   
-    // Details in the link bellow:
-    // https://yoannmoi.net/nipplejs/
-  
-    let joystickL = nipplejs.create({
-      zone: document.getElementById('joystickWrapper1'),
-      mode: 'static',
-      position: { top: '-80px', left: '80px' }
-    });
-    
-    joystickL.on('move', function (evt, data) {  
-      const forward = data.vector.y
-      const turn = data.vector.x
-  
-      if (forward > 0) 
-        airplane.moveUp();
-      else if (forward < 0)
-      airplane.moveDown();
-  
-      if (turn > 0) 
-        airplane.moveRight()
-      else if (turn < 0)
-        airplane.moveLeft()
-    })
-  
-
-}  
 // controle do avião por teclado
 
 window.addEventListener('keydown', function(e) {
@@ -459,18 +430,24 @@ function keyboardUpdate() {
   }
 }
 
-//Interface pra mapa de teclas
-// let controls = new InfoBox();
-//   controls.add("Plane Shooter");
-//   controls.addParagraph();
-//   controls.add("Mapa de teclas");
-//   controls.add("* Setas movem o avião nas respectivas direções");
-//   controls.add("* CTRL para atirar projéteis");
-//   controls.add("* Espaço para lançar mísseis");
-//   controls.add("* Tecla G para ativar modo de testes");
-//   controls.add("* Tecla ENTER para reiniciar o jogo caso perca ou chegue no final");
 
-//   controls.show();
+
+
+
+
+
+//Interface pra mapa de teclas
+let controls = new InfoBox();
+  controls.add("Plane Shooter");
+  controls.addParagraph();
+  controls.add("Mapa de teclas");
+  controls.add("* Setas movem o avião nas respectivas direções");
+  controls.add("* CTRL para atirar projéteis");
+  controls.add("* Espaço para lançar mísseis");
+  controls.add("* Tecla G para ativar modo de testes");
+  controls.add("* Tecla ENTER para reiniciar o jogo caso perca ou chegue no final");
+
+  controls.show();
 
 //Interface de danos
 const damageControl = new damageInfo();
@@ -511,25 +488,26 @@ export function Timer(callback, delay) {
   this.resume();
 }
 
-
-
 function render()
 {
+  scroller.translateZ(GAME_SPEED);
   keyboardUpdate();
   requestAnimationFrame(render); // Show events
   renderer.render(scene, camera) // Render scene
   if(!pause){
     frameCounter ++;
-    //playLevel(frameCounter);
+    playLevel(frameCounter);
     movingPlanes();
-    //moveEnemies();
-    //moveRecharges();
+    moveEnemies();
+    moveRecharges();
     if(!levelFinished){
+      // if(!shooting)
+      //   spawnProjectiles();
       Projectile.moveProjectiles(scene);
       Missile.moveMissiles(scene);
-      //checkCollisions();
-      //removeEnemies();
-      //checkPlaneDamage();
+      checkCollisions();
+      removeEnemies();
+      checkPlaneDamage();
     }
     if(playerDead){
       gameOver();

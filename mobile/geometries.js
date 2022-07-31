@@ -1,11 +1,45 @@
 import * as THREE from  'three';
-import {GLTFLoader} from '../../build/jsm/loaders/GLTFLoader.js';
-import {OBJLoader} from '../../build/jsm/loaders/OBJLoader.js';
-import {MTLLoader} from '../../build/jsm/loaders/MTLLoader.js';
-import {getMaxSize, degreesToRadians} from "../../libs/util/util.js";
-import { Object3D } from '../../build/three.module.js';
-import { CSG } from '../../libs/other/CSGMesh.js' 
+import {GLTFLoader} from '../build/jsm/loaders/GLTFLoader.js';
+import {OBJLoader} from '../build/jsm/loaders/OBJLoader.js';
+import {MTLLoader} from '../build/jsm/loaders/MTLLoader.js';
+import {getMaxSize, degreesToRadians} from "../libs/util/util.js";
+import { Object3D } from '../build/three.module.js';
+import { CSG } from '../libs/other/CSGMesh.js' 
+import { Water } from '../build/jsm/objects/Water.js';  // Water shader in here
 
+//Loading maneger
+export const loadingManager = new THREE.LoadingManager( () => {
+  console.log('loading manager')
+  let loadingScreen = document.getElementById( 'loading-screen' );
+  loadingScreen.transition = 0;
+  loadingScreen.style.setProperty('--speed1', '0');  
+  loadingScreen.style.setProperty('--speed2', '0');  
+  loadingScreen.style.setProperty('--speed3', '0');      
+
+  let button  = document.getElementById("myBtn")
+  button.style.backgroundColor = '#8f8eff';
+  button.innerHTML = 'Iniciar';
+  button.addEventListener("click", onButtonPressed);
+
+
+});
+
+export function onButtonPressed() {
+  const loadingScreen = document.getElementById( 'loading-screen' );
+  loadingScreen.transition = 0;
+  loadingScreen.classList.add( 'fade-out' );
+  loadingScreen.addEventListener( 'transitionend', (e) => {
+    const element = e.target;
+    element.remove();  
+  });  
+  // Config and play the loaded audio
+  // let sound = new THREE.Audio( new THREE.AudioListener() );
+  // audioLoader.load( audioPath, function( buffer ) {
+  //   sound.setBuffer( buffer );
+  //   sound.setLoop( true );
+  //   sound.play(); 
+  // });
+}
 export function buildHealerGeometry(){
     let auxMat = new THREE.Matrix4();
     // Base objects
@@ -55,25 +89,29 @@ export function loadGLTFFile(modelName, visibility, desiredScale, object)
 
     var obj = normalizeAndRescale(obj, desiredScale);
     var obj = fixPosition(obj);
-    obj.children[0].children[(modelName == "plane" ? 0 : 1)].children.forEach(mesh => {
-        if(modelName == "E1")
-            mesh.rotateY(Math.PI/2)
-        object.add(mesh.clone());
-    });
+    console.log(object);
+    if(modelName == "vale"){
+      object.add(obj.children[0].clone());
+    } else {
+      obj.children[0].children[(modelName == "plane" ? 0 : 1)].children.forEach(mesh => {
+          if(modelName == "E1")
+              mesh.rotateY(Math.PI/2)
+          object.add(mesh.clone());
+      });
+    }
     }, onProgress, onError);
 }
 
 
 function loadOBJFile(modelName, visibility, desiredScale, object)
 {
-  var manager = new THREE.LoadingManager( );
 
-  var mtlLoader = new MTLLoader( manager );
+  var mtlLoader = new MTLLoader( loadingManager );
   mtlLoader.setPath( "assets/" );
   mtlLoader.load( modelName + '.mtl', function ( materials ) {
         materials.preload();
 
-        var objLoader = new OBJLoader( manager );
+        var objLoader = new OBJLoader( loadingManager );
         objLoader.setMaterials(materials);
         objLoader.setPath("assets/");
         objLoader.load( modelName + ".obj", function ( obj ) {
@@ -93,7 +131,6 @@ function loadOBJFile(modelName, visibility, desiredScale, object)
           var obj = normalizeAndRescale(obj, desiredScale);
           var obj = fixPosition(obj);
 
-          console.log(obj);
           obj.children.forEach(mesh => {
             object.add(mesh.clone());
         });
@@ -153,3 +190,11 @@ loadOBJFile("launcher", true, 1, launcher);
 launcher.scale.x = 0.01
 launcher.scale.y = 0.01
 launcher.scale.z = 0.01
+
+export let vale = new Object3D;
+loadGLTFFile("vale", true, 1, vale);
+vale.rotateX(degreesToRadians(90));
+
+export let vale2 = new Object3D;
+loadGLTFFile("vale", true, 1, vale2);
+vale2.rotateX(degreesToRadians(90));
