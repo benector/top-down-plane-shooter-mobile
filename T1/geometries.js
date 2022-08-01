@@ -161,7 +161,7 @@ function fixPosition(obj)
 }
 
 export let plane = new Object3D;
-loadGLTFFile("plane", true, 1, plane);
+loadGLTFFile("airplane", true, 1, plane);
 plane.rotateY(Math.PI);
 
 export let E1 = new Object3D;
