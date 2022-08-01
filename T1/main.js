@@ -32,14 +32,13 @@ camera = initCamera(new THREE.Vector3(0,350, 200)); // Init camera in this posit
 var godMode = false;
 var playerDead = false;
 var levelFinished;
-var pause = false;
+var pause = true;
 var launching = false;
 export var frameCounter = 0;
 export const GAME_SPEED = 0.3;
 
 var bgm = new Audio('assets/bgm.mp3');
 bgm.loop = true;
-bgm.play();
 
 //iluminação
 
@@ -538,6 +537,8 @@ export function onStartButtonPressed() {
   pause = false;
 
   addJoysticks();
+  bgm.play();
+
 
 }
 

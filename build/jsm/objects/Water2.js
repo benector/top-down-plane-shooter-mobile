@@ -44,9 +44,8 @@ class Water extends Mesh {
 		const textureLoader = new TextureLoader();
 
 		const flowMap = options.flowMap || undefined;
-		const normalMap0 = options.normalMap0 || textureLoader.load( '../../../assets/textures/water1.jpg' );
-		const normalMap1 = options.normalMap1 || textureLoader.load( '../../../assets/textures/water2.jpg' );
-
+		const normalMap0 = options.normalMap0 || textureLoader.load( '../../../water1.jpg' );
+		const normalMap1 = options.normalMap1 || textureLoader.load( '../../../water2.jpg' );
 		const cycle = 0.15; // a cycle of a flow map phase
 		const halfCycle = cycle * 0.5;
 		const textureMatrix = new Matrix4();
