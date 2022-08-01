@@ -32,6 +32,7 @@ body{
     padding: 6px 14px;
     position: fixed;
     top: 0px;
+    left: 0;;
     max-width: 300px;
     background-color: rgba(53, 52, 52, 0.575);
     color: white;

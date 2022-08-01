@@ -33,48 +33,21 @@ html, body {
 opacity: 0;
 }
 #loader {
-display: block;
+display: flex;
 position: relative;
-width: 150px;
-height: 150px;
-/* margin: -75px 0 0 -75px; */
-border-radius: 50%;
+
+align-items: center;
+justify-content: center;/* margin: -75px 0 0 -75px; */
+/* border-radius: 50%;
 border: 5px solid transparent;
 border-top-color: #e6e9ff;
-animation: spin var(--speed1) linear infinite;
-}
-#loader:before {
-content: "";
-position: absolute;
-top: 12px;
-left: 12px;
-right: 12px;
-bottom: 12px;
-border-radius: 50%;
-border: 5px solid transparent;
-border-top-color: #8f8eff;
-animation: spin var(--speed2) linear infinite;
+animation: spin var(--speed1) linear infinite; */
 }
 
-#loader:after {
-content: "";
-position: absolute;
-top: 30px;
-left: 30px;
-right: 30px;
-bottom: 30px;
-border-radius: 80%;
-border: 5px solid transparent;
-border-top-color: #5947ff;
-animation: spin var(--speed3) linear infinite;
-}
-@keyframes spin {
-0%   {
-  transform: rotate(0deg);
-}
-100% {
-  transform: rotate(360deg);
-}
+
+img#loading-img{
+  width: 50px;
+  align-self: center;
 }
 .button {
 background-color: lightgray; 
@@ -103,7 +76,8 @@ border-radius: 8px;
 
 .title {
   color: white;
-  width: 200px;
+  max-width: 200px;
+  margin: 0 auto;
 }
 
 .title h1{
@@ -121,4 +95,14 @@ border-radius: 8px;
 footer{
   color:white;
   margin-top: 5px;
+}
+
+#content{
+  max-height: 100%;
+  padding: 1rem;
+  text-align: center;
+}
+
+#guide {
+  display: none;
 }

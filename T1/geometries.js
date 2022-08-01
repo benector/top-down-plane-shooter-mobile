@@ -18,6 +18,8 @@ const loadingManager = new THREE.LoadingManager( () => {
   loadingScreen.style.setProperty('--speed3', '0');      
 
   let button  = document.getElementById("myBtn")
+  let loadingImg  = document.getElementById("loading-img");
+  loadingImg.remove();
   button.style.backgroundColor = '#8f8eff';
   button.innerHTML = 'Iniciar';
   button.addEventListener("click", onStartButtonPressed);
@@ -157,7 +159,7 @@ function fixPosition(obj)
 }
 
 export let plane = new Object3D;
-loadGLTFFile("Plane", true, 1, plane);
+loadGLTFFile("plane", true, 1, plane);
 plane.rotateY(Math.PI);
 
 export let E1 = new Object3D;
