@@ -9,30 +9,27 @@ async function launchMissile(){
   await delay(500);
   if(launching)
     launchMissile();
- 
- 
 }
-
-
 //controle do avião porjoystick e botões
 
 //botões
 const shootButton = document.getElementById('shoot');
 shootButton.addEventListener('touchstart', (event) => {
-  if(!shooting){
-    shooting = true;
-    spawnProjectiles();
+  if(!airplane.shooting){
+    airplane.shooting = true;
+    airplane.shootingTimer = 0;
+    shoot();
   }
 });
 
 shootButton.addEventListener('touchend', (event) => {
-  console.log('touch end',event)
-  shooting = false;
+  airplane.shooting = false;
 
 });
 
 const launchButton = document.getElementById('launch');
-launchButton.addEventListener('touchstart', ()=>{
+launchButton.addEventListener('touchstart', (event)=>{
+
   if(!launching){
     launching = true;
     launchMissile();
@@ -40,14 +37,12 @@ launchButton.addEventListener('touchstart', ()=>{
 })
 
 launchButton.addEventListener('touchend', (event) => {
-  console.log('touch end',event)
   launching = false;
 
 });
 
 
 //joysticks
-addJoysticks();
 
 function addJoysticks(){
    
@@ -78,9 +73,18 @@ function addJoysticks(){
 
 }  
 
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
+async function restartGame(){
+  await delay(5000)
+  window.location.reload();
+}
 
 //start game
 export function onStartButtonPressed() {
+  
   const loadingScreen = document.getElementById( 'loading-screen' );
   loadingScreen.transition = 0;
   loadingScreen.classList.add( 'fade-out' );
@@ -88,20 +92,8 @@ export function onStartButtonPressed() {
     const element = e.target;
     element.remove();  
   });  
-  let startGameEvent = new Event("startGame");
-
   pause = false;
 
-  // Config and play the loaded audio
-  // let sound = new THREE.Audio( new THREE.AudioListener() );
-  // audioLoader.load( audioPath, function( buffer ) {
-  //   sound.setBuffer( buffer );
-  //   sound.setLoop( true );
-  //   sound.play(); 
-  // });
+  addJoysticks();
+
 }
-
-window.addEventListener("startGame" , (event)=>{
-  console.log(event)
-  pause = false;
-});

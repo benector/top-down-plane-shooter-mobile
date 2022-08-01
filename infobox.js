@@ -2,7 +2,6 @@ export class InfoBox {
     constructor() {
       this.infoBox = document.createElement('div');
       this.infoBox.id = "InfoxBox";
-      var header = 
       this.infoBox.style.minWidth = "100px";
       this.infoBox.style.padding = "6px 14px";
       this.infoBox.style.position = "fixed";

@@ -3,14 +3,12 @@
 <head>
     <title>Top-Down Airplane Shooter</title>
 
-    <link rel="shortcut icon" href="./favicon.ico">
+    <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="./resources/default.css">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./mobile.css">
     <link rel="stylesheet" href="./loadingScreen.css">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">  
-
+    <link rel="stylesheet" href="./mobile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
+    
     <style>  
       #joystickWrapper1 {
         pointer-events: auto;
@@ -22,6 +20,7 @@
 
       
     </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">  
   </head>
 
 <body>
@@ -30,8 +29,6 @@
   <script type="importmap"> 
     {"imports": {"three": "./build/three.module.js"}} 
   </script>  
-
-  
   <section id="loading-screen">
     
     <div class="title">
@@ -61,10 +58,9 @@
     <h1>FIM DE JOGO</h1>
     <p>Voltando para a tela de início em 5 segundos...</p>
   </div>
-  <script src="./libs/other/nipplejs.js"></script>        
-
+  <script src="./libs/other/nipplejs.js"></script>    
   <div id="webgl-output">     
-    <script type="module" src="appMobile.js"></script>
+    <script type="module" src="T1/main.js"></script>
   </div>
 </body>
 
