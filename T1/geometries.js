@@ -19,6 +19,8 @@ const loadingManager = new THREE.LoadingManager( () => {
 
   let button  = document.getElementById("myBtn")
   let loadingImg  = document.getElementById("loading-img");
+  let guide = document.getElementById("guide");
+  guide.style.display="block";
   loadingImg.remove();
   button.style.backgroundColor = '#8f8eff';
   button.innerHTML = 'Iniciar';
