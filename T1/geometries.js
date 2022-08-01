@@ -81,7 +81,7 @@ export function loadGLTFFile(modelName, visibility, desiredScale, object)
     if(modelName == "vale" || modelName == "missile"){
       object.add(obj.children[0].clone());
     } else {
-      obj.children[0].children[(modelName == "plane" ? 0 : 1)].children.forEach(mesh => {
+      obj.children[0].children[(modelName == "airplane" ? 0 : 1)].children.forEach(mesh => {
           if(modelName == "E1")
               mesh.rotateY(Math.PI/2)
           object.add(mesh.clone());
