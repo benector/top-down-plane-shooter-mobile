@@ -21,6 +21,11 @@ body{
     font-weight: bold;
 }
 
+#infobox-pc {
+    display: none;
+  }
+
+  
 #damage-control{
     top: 0;
     display: flex;
